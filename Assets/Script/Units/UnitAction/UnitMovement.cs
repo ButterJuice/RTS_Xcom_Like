@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Mirror;
-using UnityEngine.InputSystem;
 
-public class UnitMovement : NetworkBehaviour
+public class UnitMovement : UnitAction
 {
 
-    [SerializeField] private Animator unitAnimator = null;
+    //[SerializeField] private Animator unitAnimator = null;
     public NavMeshAgent agent = null;
 
     [SyncVar] bool isRunning;
@@ -18,7 +17,13 @@ public class UnitMovement : NetworkBehaviour
     public void CmdMove(Vector3 position)
     {
         if (!NavMesh.SamplePosition(position, out NavMeshHit hit, 1f, NavMesh.AllAreas)) { return; }
+        agent.isStopped = false;
         agent.SetDestination(hit.position);
+    }
+    [Command]
+    public void StopMoving()
+    {
+        agent.isStopped = true;
     }
 
     [Command]
@@ -31,12 +36,14 @@ public class UnitMovement : NetworkBehaviour
     #region Client
 
 
-    [ClientCallback]
+    [Client]
     private void Update()
     {
+        if(!isOwned) return;
+
         CmdSetRun(agent.velocity.magnitude > 0f);
 
-        unitAnimator.SetBool("isRunning", isRunning);
+      //  unitAnimator.SetBool("isRunning", isRunning);
     }
     #endregion
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //used for drawing our marquee
-public static class SelectionBox
+public static class Utils
 {
     static Texture2D _whiteTexture;
     public static Texture2D WhiteTexture
