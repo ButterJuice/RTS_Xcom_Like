@@ -25,18 +25,32 @@ public class MachineGun : Weapon
     {   /*
     TODO: call the animation
     */
-        drawLine(position);
+        StartCoroutine(drawLineCoroutine(position));
 
     }
-
-[Client]
+/*
+    [Client]
     public void drawLine(Vector3 position)
     {
         Vector3 p1 = base.weaponMuzzle.transform.position;
         lr.positionCount = 2;
-        lr.SetPosition(0,p1);
-        lr.SetPosition(1,position);
+        lr.SetPosition(0, p1);
+        lr.SetPosition(1, position);
     }
+*/
+
+    [Client]
+    IEnumerator drawLineCoroutine(Vector3 position)
+    {
+        lr.enabled = true;
+        Vector3 p1 = base.weaponMuzzle.transform.position;
+        lr.positionCount = 2;
+        lr.SetPosition(0, p1);
+        lr.SetPosition(1, position);
+       yield return new WaitForSeconds(0.5f);
+        lr.enabled = false;
+    }
+
 
 
     #endregion
