@@ -12,7 +12,7 @@ https://github.com/pickles976/RTS_selection/blob/master/global_selection.cs
 */
 public class UnitSelection : MonoBehaviour
 {
-    [SerializeField] private LayerMask layerMask = new LayerMask();
+    //[SerializeField] private LayerMask layerMask = new LayerMask();
     private Camera mainCamera;
 
     public List<Unit> selectedUnits { get; } = new List<Unit>();//{get;} Stop this variable from being set elsewhere
