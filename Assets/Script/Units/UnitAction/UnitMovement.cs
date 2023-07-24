@@ -21,7 +21,7 @@ public class UnitMovement : UnitAction
         agent.SetDestination(hit.position);
     }
     [Command]
-    public void StopMoving()
+    public void CmdStopMoving()
     {
         agent.isStopped = true;
     }

@@ -67,7 +67,7 @@ for exemple an attack order on the ground will call move unit until there is a u
         if (unitSelection.selectedUnits.Contains(targetUnit)) return;
         foreach (Unit unit in unitSelection.selectedUnits)
         {
-            unit.GetUnitAttackOrder().AttackTarget(targetUnit);
+            unit.GetUnitAttackOrder().CmdAttackTarget(targetUnit);
         }
     }  
     //this founction is also used every time the user click without holding shift
@@ -76,8 +76,8 @@ for exemple an attack order on the ground will call move unit until there is a u
         
         foreach (Unit unit in unitSelection.selectedUnits)
         {
-            unit.GetUnitMovement().StopMoving();
-            unit.GetUnitAttackOrder().StopAttack();
+            unit.GetUnitMovement().CmdStopMoving();
+            unit.GetUnitAttackOrder().CmdStopAttack();
         }
     }
 }

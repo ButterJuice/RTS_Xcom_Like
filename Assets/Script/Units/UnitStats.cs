@@ -10,15 +10,19 @@ public class UnitStats : NetworkBehaviour
     
     #region Server
 [Server]
-public void loseHealth(float healthLost) {
+public void takeDamage(float healthLost) {
     health -= healthLost;
     if(health < 0){
-        Die();
+        RpcDie();
     }
 }
 
 [ClientRpc]
-void Die(){
+/*
+TODO:
+change it to die animation and die should be another procedure on the server (for the case where they are special effect)
+*/
+void RpcDie(){
     //those 2 line are mostly for testing purpose they will change in the future
     gameObject.transform.GetChild(0).gameObject.SetActive(false);
     gameObject.transform.GetChild(1).gameObject.SetActive(true);

@@ -5,12 +5,14 @@ using Mirror;
 abstract public class Weapon : NetworkBehaviour
 {
     [SerializeField] protected SphereCollider attackRange;
+    [SerializeField] protected GameObject weaponMuzzle;
 
 
-//[Server]
-    abstract public float getAttackRange();
+    public float getAttackRange(){          
+        return attackRange.radius;
+    }
 
-//[Server]
-    abstract public void Shoot(Unit unit);
+//[Command]
+    abstract public void CmdShoot(Unit unit);
 
 }
