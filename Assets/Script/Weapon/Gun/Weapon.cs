@@ -5,7 +5,7 @@ using Mirror;
 abstract public class Weapon : NetworkBehaviour
 {
     [SerializeField] protected SphereCollider attackRange;
-    [SerializeField] protected GameObject weaponMuzzle;
+    [SerializeField] public GameObject weaponMuzzle;
 
 
     public float getAttackRange(){          

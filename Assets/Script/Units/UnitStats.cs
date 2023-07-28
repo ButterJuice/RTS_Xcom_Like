@@ -12,7 +12,7 @@ public class UnitStats : NetworkBehaviour
 [Server]
 public void takeDamage(float healthLost) {
     health -= healthLost;
-    if(health < 0){
+    if(health <= 0){
         RpcDie();
     }
 }

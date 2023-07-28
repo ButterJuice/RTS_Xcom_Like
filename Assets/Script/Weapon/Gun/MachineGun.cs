@@ -12,7 +12,8 @@ public class MachineGun : Weapon
     override public void CmdShoot(Unit targetUnit)
     {
         targetUnit.GetUnitStats().takeDamage(10);
-        RpcShootAnimation(targetUnit.transform.position);
+        Vector3 closestPoint = targetUnit.GetComponent<Collider>().ClosestPoint(base.weaponMuzzle.transform.position);
+        RpcShootAnimation(targetUnit.GetComponent<Collider>().ClosestPoint(base.weaponMuzzle.transform.position));
     }
 
     #endregion
@@ -47,7 +48,7 @@ public class MachineGun : Weapon
         lr.positionCount = 2;
         lr.SetPosition(0, p1);
         lr.SetPosition(1, position);
-       yield return new WaitForSeconds(0.5f);
+       yield return new WaitForSeconds(0.1f);
         lr.enabled = false;
     }
 

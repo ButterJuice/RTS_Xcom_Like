@@ -27,6 +27,7 @@ public class UnitSelection : MonoBehaviour
     //the vertices of our meshCollider
     Vector3[] verts;
     Vector3[] vecs;
+    [SerializeField] private LayerMask interactableLayer;
 
 
     private void Start()
@@ -70,7 +71,7 @@ public class UnitSelection : MonoBehaviour
     private void ClickSelect()
     {
         Ray ray = Camera.main.ScreenPointToRay(p1);
-        if (Physics.Raycast(ray, out RaycastHit hit, 50000.0f))
+        if (Physics.Raycast(ray, out RaycastHit hit, 50000.0f, interactableLayer))
         {
             if (!Input.GetKey(KeyCode.LeftShift))
             {
