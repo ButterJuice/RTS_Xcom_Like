@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8128939171366866157}
-  - component: {fileID: 9006583021087761615}
   - component: {fileID: 5284502118765440888}
   - component: {fileID: 545183095413145330}
   m_Layer: 0
@@ -36,19 +35,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &9006583021087761615
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 460148434298582895}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5284502118765440888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64,8 +50,16 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  unitPrefab: {fileID: 6489860100573734745, guid: 0c97fe04b1229724297aba2afdfeea45, type: 3}
+  unitPrefabs:
+  - {fileID: 6489860100573734745, guid: 0c97fe04b1229724297aba2afdfeea45, type: 3}
+  - {fileID: 6489860100573734745, guid: 0c97fe04b1229724297aba2afdfeea45, type: 3}
+  - {fileID: 6489860100573734745, guid: 0c97fe04b1229724297aba2afdfeea45, type: 3}
+  - {fileID: 6489860100573734745, guid: 0c97fe04b1229724297aba2afdfeea45, type: 3}
   unitSpawnPoint: {fileID: 4379084608068067931}
+  myPlayer: {fileID: 0}
+  teamColors:
+  - {fileID: 2100000, guid: 8b51ad889c241594f880d9df4b0a5bf0, type: 2}
+  - {fileID: 2100000, guid: ace844d078371124fbb5de61950e697b, type: 2}
 --- !u!114 &545183095413145330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,7 +104,7 @@ Transform:
   m_GameObject: {fileID: 1922994705344262539}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 4.0567074, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8128939171366866157}
@@ -190,7 +184,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3108609480763089987}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: 0, z: 0}
+  m_LocalPosition: {x: 2, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

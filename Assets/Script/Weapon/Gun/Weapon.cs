@@ -15,4 +15,5 @@ abstract public class Weapon : NetworkBehaviour
 //[Command]
     abstract public void CmdShoot(Unit unit);
 
+    abstract public void CmdShoot(Vector3 position);
 }

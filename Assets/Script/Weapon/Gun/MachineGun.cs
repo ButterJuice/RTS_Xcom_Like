@@ -6,6 +6,7 @@ using UnityEngine;
 public class MachineGun : Weapon
 {
     [SerializeField] private LineRenderer lr = null;//Could be a get compenent on the WeaponMuzzle Gameobject
+    
 
     #region Server
     [Command]
@@ -14,6 +15,13 @@ public class MachineGun : Weapon
         targetUnit.GetUnitStats().takeDamage(10);
         Vector3 closestPoint = targetUnit.GetComponent<Collider>().ClosestPoint(base.weaponMuzzle.transform.position);
         RpcShootAnimation(targetUnit.GetComponent<Collider>().ClosestPoint(base.weaponMuzzle.transform.position));
+    }
+
+
+    public override void CmdShoot(Vector3 position)
+    {
+        RpcShootAnimation(position);
+        Debug.LogWarning("CmdShoot(Position) de MachineGun a été appellée, ce script n'est pas encore entierement implémenté");
     }
 
     #endregion

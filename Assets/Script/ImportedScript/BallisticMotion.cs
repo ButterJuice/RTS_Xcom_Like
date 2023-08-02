@@ -40,9 +40,9 @@ public class BallisticMotion : MonoBehaviour {
 
         impulse = Vector3.zero;
 
-        // Z-kill
-        if (transform.position.y < -5f)
-            Destroy(gameObject);
+        // // Z-kill
+        // if (transform.position.y < -5f)
+        //     Destroy(gameObject);
 	}
 
     public void AddImpulse(Vector3 impulse) {

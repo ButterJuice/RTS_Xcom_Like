@@ -5,9 +5,11 @@ using Mirror;
 
 public class UnitAttackOrder : UnitAction
 {
-
-    [SerializeField] private Weapon weapon;
-
+    /*At the time of writing this the game isn't planned to handle multiple weapon main weapon,
+     if there is a need to you can try to transforme this in a list and change the code accordigly
+      */
+    [SerializeField, Tooltip("This is the weapon used for auto-attacking")] private Weapon mainWeapon;
+    [SerializeField, Tooltip("this is the weapon used for ability")] private Weapon abilityWeapon;
     private float weaponAttackRange;
     [SyncVar] private Unit targetedUnit;
     private IEnumerator CR_startShooting;
@@ -20,7 +22,7 @@ public class UnitAttackOrder : UnitAction
     protected new virtual void Start()
     {
         base.Start();
-        weaponAttackRange = weapon.getAttackRange();
+        weaponAttackRange = mainWeapon.getAttackRange();
         CR_startShooting = StartShooting();
         CR_goToTarget = GoToTarget();
     }
@@ -33,14 +35,14 @@ public class UnitAttackOrder : UnitAction
         if (!isOwned) return;
         if (targetedUnit)
         {
-            Vector3 shotOriginePosition = weapon.weaponMuzzle.transform.position;
+            Vector3 shotOriginePosition = mainWeapon.weaponMuzzle.transform.position;
             Vector3 closestPointOfTarget = targetedUnit.gameObject.GetComponent<Collider>().ClosestPoint(shotOriginePosition);
 
             gameObject.GetComponent<Collider>().enabled = false;
 
             Ray rayToTarget = new Ray(shotOriginePosition, closestPointOfTarget - shotOriginePosition);//The second argument is a delta vector
-            Physics.Raycast(rayToTarget, out RaycastHit hit, weaponAttackRange,shootingTargetLayer);
-            Debug.DrawRay(shotOriginePosition, hit.point- shotOriginePosition, Color.red, 5.0f);
+            Physics.Raycast(rayToTarget, out RaycastHit hit, weaponAttackRange, shootingTargetLayer);
+            Debug.DrawRay(shotOriginePosition, hit.point - shotOriginePosition, Color.red, 5.0f);
             //Debug.DrawLine(shotOriginePosition, closestPointOfTarget , Color.yellow, 5.0f);
 
             gameObject.GetComponent<Collider>().enabled = true;
@@ -97,10 +99,21 @@ public class UnitAttackOrder : UnitAction
         {
             if (targetedUnit)//here to prevent on error that is caused if there is no target as it is a coroutine
             {
-                weapon.CmdShoot(targetedUnit);
+                mainWeapon.CmdShoot(targetedUnit);
             }
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    [Client]
+    void UseAbilityShoot(Vector3 position)
+    {
+        abilityWeapon.CmdShoot(position);
+    }
+    [Client]
+    void UseAbilityShoot(Unit unit)
+    {
+        abilityWeapon.CmdShoot(unit);
     }
 
     #endregion
@@ -123,7 +136,26 @@ public class UnitAttackOrder : UnitAction
         {
             base.unitCommandManager.MoveOrder(closestPointOfTarget);
         }
-
+    }
+    
+    [Command]
+    public void CmdAttackTarget(Vector3 targetPosition)
+    {
+        if (Vector3.Distance(targetPosition, gameObject.transform.position) > weaponAttackRange)
+        {
+            base.unitCommandManager.MoveOrder(targetPosition);
+        }
+    }
+    
+    [Command]
+    public void CmdUseAbilityTarget(Unit targetUnit)
+    {
+        abilityWeapon.CmdShoot(targetUnit);
+    }
+    [Command]
+    public void CmdUseAbilityTarget(Vector3 targetPosition)
+    {
+        abilityWeapon.CmdShoot(targetPosition);
     }
 
     [Command]

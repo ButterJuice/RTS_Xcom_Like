@@ -24,6 +24,7 @@ public class UnitCommandManager : NetworkBehaviour
     private void Update()
     {
 
+
         if (!Mouse.current.rightButton.wasPressedThisFrame) { return; }
         StopOrder();//Could be moved elsewere if we only want to stop action if the requested action is valid 
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -35,7 +36,9 @@ public class UnitCommandManager : NetworkBehaviour
         {
             Debug.DrawLine(mainCamera.transform.position, hit.point, Color.red, 1.0f);
             if (hit.collider.TryGetComponent<Unit>(out Unit unit)) {
-                AttackOrder(unit);
+                
+                AbilityOrder(unit.transform.position);
+                //AttackOrder(unit);
              }
 
         }
@@ -70,6 +73,16 @@ for exemple an attack order on the ground will call move unit until there is a u
             unit.GetUnitAttackOrder().CmdAttackTarget(targetUnit);
         }
     }  
+
+[Client]
+    public void AbilityOrder(Vector3 targetPosition)
+    {
+        foreach (Unit unit in unitSelection.selectedUnits)
+        {
+            unit.GetUnitAttackOrder().CmdUseAbilityTarget(targetPosition);
+        }
+    }  
+
     //this founction is also used every time the user click without holding shift
 [Client]
     public void StopOrder() {
