@@ -6,6 +6,7 @@ TagManager:
   tags:
   - UnitSelectionManager
   - Projectiles
+  - Canvas
   layers:
   - Default
   - TransparentFX

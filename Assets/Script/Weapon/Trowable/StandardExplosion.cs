@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StandardExplosion : NetworkBehaviour
 {
-    private Collider explosionCollider;
+    [SerializeField] private Collider explosionCollider;
     private float radius; // probleme de logique, on a aucune garantie que explosion collider est une sphere   -> faire une nouvelle classe abstraite
     [SerializeField] private float takeDamage = 50f;
 

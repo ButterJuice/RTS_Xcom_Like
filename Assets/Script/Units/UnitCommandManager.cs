@@ -64,6 +64,11 @@ for exemple an attack order on the ground will call move unit until there is a u
             unit.GetUnitMovement().CmdMove(point);
         }
     }
+[ClientRpc]
+    public void RpcMoveOrder(Vector3 point)
+    {
+        MoveOrder(point);
+    }
 [Client]
     public void AttackOrder(Unit targetUnit)
     {

@@ -115,6 +115,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  explosionCollider: {fileID: 1288359260247086301}
+  takeDamage: 50
 --- !u!114 &5406132169636650647
 MonoBehaviour:
   m_ObjectHideFlags: 0

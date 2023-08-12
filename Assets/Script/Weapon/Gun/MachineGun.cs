@@ -18,6 +18,7 @@ public class MachineGun : Weapon
     }
 
 
+    [Command]
     public override void CmdShoot(Vector3 position)
     {
         RpcShootAnimation(position);

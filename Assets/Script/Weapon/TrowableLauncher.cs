@@ -19,21 +19,36 @@ public class TrowableLauncher : Weapon
         muzzle = gameObject;//if I have to change the muzzle position I will do it here
         CR_shootCooldown = ShootCooldown();
         StartCoroutine(CR_shootCooldown);
+
     }
+
 
     [Client]
     void Update()
     {
         if (Input.GetKey(KeyCode.G))
         {
-            shoot();
+            CmdShoot(target);
 
         }
     }
 
+
     [Command]
-    private void shoot()
+    public override void CmdShoot(Unit unit)
     {
+        Shoot(unit.transform.position);
+    }
+    [Command]
+    public override void CmdShoot(Vector3 position)
+    {
+        Shoot(position);
+    }
+    #region Server
+    [Server]
+    private void Shoot(Vector3 position)
+    {
+        target = position;
         /*
         To hit our target we need to do some balistic, so here is somewhere I saw some equation
         https://www.forrestthewoods.com/blog/solving_ballistic_trajectories/
@@ -75,9 +90,6 @@ public class TrowableLauncher : Weapon
 
     }
 
-
-
-
     IEnumerator ShootCooldown()
     {
         while (true)
@@ -91,18 +103,5 @@ public class TrowableLauncher : Weapon
         }
     }
 
-    #region Server
-    [Command]
-    public override void CmdShoot(Unit unit)
-    {
-        target = unit.transform.position;
-        shoot();
-    }
-    [Command]
-    public override void CmdShoot(Vector3 position)
-    {
-        target = position;
-        shoot();
-    }
     #endregion
 }

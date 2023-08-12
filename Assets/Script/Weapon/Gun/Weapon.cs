@@ -4,6 +4,7 @@ using UnityEngine;
 using Mirror;
 abstract public class Weapon : NetworkBehaviour
 {
+    // [SyncVar]public NetworkIdentity parentNetId; 
     [SerializeField] protected SphereCollider attackRange;
     [SerializeField] public GameObject weaponMuzzle;
 
@@ -15,5 +16,7 @@ abstract public class Weapon : NetworkBehaviour
 //[Command]
     abstract public void CmdShoot(Unit unit);
 
+//[Command]
     abstract public void CmdShoot(Vector3 position);
+
 }

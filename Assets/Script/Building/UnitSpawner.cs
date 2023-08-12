@@ -17,16 +17,22 @@ public class UnitSpawner : NetworkBehaviour//, IPointerClickHandler
     [Command]
     private void CmdSpawnUnit(GameObject unitPrefab)
     {
-        GameObject unitSpawn = Instantiate(unitPrefab, unitSpawnPoint.position, unitSpawnPoint.rotation);
-        NetworkServer.Spawn(unitSpawn, connectionToClient);
-        unitPrefab.GetComponent<Unit>().myPlayer = myPlayer;
+        SpawnUnit(unitPrefab);
     }
     [Server]
     private void SpawnUnit(GameObject unitPrefab)
     {
         GameObject unitSpawn = Instantiate(unitPrefab, unitSpawnPoint.position, unitSpawnPoint.rotation);
         NetworkServer.Spawn(unitSpawn, connectionToClient);
+
+            if (isServer) Debug.Log("l'unité a été donné a " + GetComponent<NetworkIdentity>().connectionToClient);
+
+            
         unitPrefab.GetComponent<Unit>().myPlayer = myPlayer;
+
+        // if(TryGetComponent<Unit>(out Unit unit)){
+        //     unit.GetUnitStats().ServerStart();
+        // }
     }
     [Command]
     private void CmdSpawnUnits()
@@ -47,6 +53,8 @@ public class UnitSpawner : NetworkBehaviour//, IPointerClickHandler
 
     private void Start()
     {
+        if (!isOwned) return;
+
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players)
         {
@@ -68,6 +76,10 @@ public class UnitSpawner : NetworkBehaviour//, IPointerClickHandler
 
         CmdSpawnUnits();
     }
+
+
+
+
 
     /*
     //right now this function is used for testing
