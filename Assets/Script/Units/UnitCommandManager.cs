@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Linq;
 
 public class UnitCommandManager : NetworkBehaviour
 {
@@ -37,8 +38,8 @@ public class UnitCommandManager : NetworkBehaviour
             Debug.DrawLine(mainCamera.transform.position, hit.point, Color.red, 1.0f);
             if (hit.collider.TryGetComponent<Unit>(out Unit unit)) {
                 
-                AbilityOrder(unit.transform.position);
-                //AttackOrder(unit);
+                // AbilityOrder(unit.transform.position);
+                AttackOrder(unit);
              }
 
         }
@@ -88,6 +89,12 @@ for exemple an attack order on the ground will call move unit until there is a u
         }
     }  
 
+    public void AbilityOrder(Unit abilityUser, Vector3 targetPosition)
+    {
+            abilityUser.GetUnitAttackOrder().CmdUseAbilityTarget(targetPosition);
+        
+    } 
+
     //this founction is also used every time the user click without holding shift
 [Client]
     public void StopOrder() {
@@ -97,5 +104,10 @@ for exemple an attack order on the ground will call move unit until there is a u
             unit.GetUnitMovement().CmdStopMoving();
             unit.GetUnitAttackOrder().CmdStopAttack();
         }
+    }
+
+[Client]
+    public Unit returnFirstUnit(){
+        return unitSelection.selectedUnits.First();
     }
 }

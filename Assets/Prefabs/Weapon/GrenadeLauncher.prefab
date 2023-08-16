@@ -142,6 +142,9 @@ MonoBehaviour:
   target: {x: 0, y: 0, z: 0}
   projSpeed: 15
   trajectoryPredictor: {fileID: 3133178172493780545}
+  hitableLayer:
+    serializedVersion: 2
+    m_Bits: 448
 --- !u!120 &4125156649887396146
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -193,8 +196,8 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0
-        value: 1
+        time: 0.008583069
+        value: 0.69952965
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -258,11 +261,11 @@ MonoBehaviour:
   syncInterval: 0
   hitMarker: {fileID: 2273327989234896074, guid: 34b8db54b8e66594ba4757aa1c0e80dd, type: 3}
   maxPoints: 50
-  increment: 0.5
-  rayOverlap: 1.1
+  increment: 0.2
+  rayOverlap: 1.05
   hitableLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 448
 --- !u!114 &4230770736902159612
 MonoBehaviour:
   m_ObjectHideFlags: 0

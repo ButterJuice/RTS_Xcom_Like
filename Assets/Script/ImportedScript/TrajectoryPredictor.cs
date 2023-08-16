@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Mirror;
 using UnityEngine;
 
@@ -95,7 +96,8 @@ If I want a prediction based on a direction and a velocity then I can use this:
 
     private Vector3 CalculateNewVelocity(Vector3 velocity, float drag, float increment)
     {
-        velocity += Physics.gravity * increment;
+        // velocity += (Physics.gravity) * increment;//inexacte je sais pas pourquoi
+        velocity += (Physics.gravity+0.5f*Vector3.up) * increment;//correction moche a cause d'imprecision
         velocity *= Mathf.Clamp01(1f - drag * increment);
         return velocity;
     }
@@ -115,4 +117,5 @@ If I want a prediction based on a direction and a velocity then I can use this:
         trajectoryLine.enabled = visible;
         hitMarker.gameObject.SetActive(visible);
     }
+
 }

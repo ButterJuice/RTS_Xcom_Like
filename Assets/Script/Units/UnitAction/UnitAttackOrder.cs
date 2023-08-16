@@ -142,10 +142,6 @@ public class UnitAttackOrder : UnitAction
         }
     }
 
-    // public void test()
-    // {
-    //     mainWeapon.CmdShoot(targetedUnit);
-    // }
 
     [Client]
     void UseAbilityShoot(Vector3 position)

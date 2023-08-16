@@ -254,7 +254,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4076909063888871760}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.59, y: -0.19, z: -1.244}
+  m_LocalPosition: {x: -0.59, y: -0.036, z: -1.244}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -681,6 +681,8 @@ MonoBehaviour:
   topRightEmplacement: {fileID: 8292023371021690537}
   mainWeapon: {fileID: 3251205844441078894, guid: 45bb8e98c23b9a540a7682e8bf465544, type: 3}
   abilityWeapon: {fileID: 3943167910536755289, guid: 2559f89415502d143aa272d2679716a9, type: 3}
+  mainWeaponTransform: {fileID: 0}
+  abilityWeaponTransform: {fileID: 0}
 --- !u!114 &8132424200575236164
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class TrowableLauncher : Weapon
 {
@@ -13,10 +15,11 @@ public class TrowableLauncher : Weapon
     [SerializeField, Tooltip("The speed at wich the projectile will be launched")] private float projSpeed;
     [SerializeField] private TrajectoryPredictor trajectoryPredictor;
     private GameObject muzzle;//muzzle refer to the gameObject of the shooting point
+    [SerializeField, Tooltip("The layers that can be hit by the projectile")]LayerMask hitableLayer;
 
     private void Start()
     {
-        muzzle = gameObject;//if I have to change the muzzle position I will do it here
+        muzzle = base.weaponMuzzle;
         CR_shootCooldown = ShootCooldown();
         StartCoroutine(CR_shootCooldown);
 
@@ -26,11 +29,11 @@ public class TrowableLauncher : Weapon
     [Client]
     void Update()
     {
-        if (Input.GetKey(KeyCode.G))
-        {
-            CmdShoot(target);
+        // if (Input.GetKey(KeyCode.G))
+        // {
+        //     CmdShoot(target);
 
-        }
+        // }
     }
 
 
@@ -59,24 +62,33 @@ public class TrowableLauncher : Weapon
         int numberSolution = fts.solve_ballistic_arc(transform.position, projSpeed, target, -Physics.gravity.y, out Vector3 low, out Vector3 high);
 
         Vector3 trowForce = Vector3.zero;
-        //TODO:
 
-        //To be removed
+        drawTrajectoryLine(target);
+
+        float distanceFromTarget = 0;
+        Ray rayToTarget = new Ray(muzzle.transform.position, target - muzzle.transform.position);
+        if (Physics.Raycast(rayToTarget, out RaycastHit hit, 50000.0f, hitableLayer))
+        {
+            distanceFromTarget = Vector3.Distance(hit.point, target);
+        }
+
         if (numberSolution == 0)
         {
             Debug.Log("Pas de trajectoire valid");
             return;
         }
-        //  else if (trajectoire valide)
-        //  {
-        trowForce = high;
-        trajectoryPredictor.PredictTrajectory(trowable, muzzle.transform.position, high);
-        //  }
-        // else 
-        // {
-        //    trowForce = low;
-        //trajectoryPredictor.PredictTrajectory(trowable, muzzle.transform.position, low, projSpeed); // for lower arc
-        // }
+        else if (distanceFromTarget > 1) //if (trajectoire valide)
+        {
+            trowForce = high;
+            // trajectoryPredictor.PredictTrajectory(trowable, muzzle.transform.position, high);
+        }
+        else
+        {
+            trowForce = low;
+            //trajectoryPredictor.PredictTrajectory(trowable, muzzle.transform.position, low); // for lower arc
+        }
+
+
 
         if (readyToShoot == true)
         {
@@ -89,6 +101,44 @@ public class TrowableLauncher : Weapon
         }
 
     }
+
+    [Client]
+
+    public void drawTrajectoryLine(Vector3 destination)
+    {
+
+            SetTrajectoryVisible(true);
+        int numberSolution = fts.solve_ballistic_arc(transform.position, projSpeed, destination, -Physics.gravity.y, out Vector3 low, out Vector3 high);
+
+
+        float distanceFromTarget = 0;
+        Ray rayToTarget = new Ray(muzzle.transform.position, destination - muzzle.transform.position);
+        if (Physics.Raycast(rayToTarget, out RaycastHit hit, 50000.0f, hitableLayer))
+        {
+            distanceFromTarget = Vector3.Distance(hit.point, destination);
+        }
+
+        if (numberSolution == 0)
+        {
+            SetTrajectoryVisible(false);
+        }
+         else if (distanceFromTarget > 1)
+         {
+        trajectoryPredictor.PredictTrajectory(trowable, muzzle.transform.position, high);
+         }
+        else 
+        {
+        trajectoryPredictor.PredictTrajectory(trowable, muzzle.transform.position, low); // for lower arc
+        }
+    }
+
+    [Client]
+
+    public void SetTrajectoryVisible(bool visible)
+    {
+        trajectoryPredictor.SetTrajectoryVisible(visible);
+    }
+
 
     IEnumerator ShootCooldown()
     {
