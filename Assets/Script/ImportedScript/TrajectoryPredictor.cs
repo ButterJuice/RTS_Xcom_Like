@@ -112,6 +112,7 @@ If I want a prediction based on a direction and a velocity then I can use this:
         hitMarker.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
     }
 
+[Client]
     public void SetTrajectoryVisible(bool visible)
     {
         trajectoryLine.enabled = visible;

@@ -8,7 +8,6 @@ public class PlayersStats : NetworkBehaviour
     [SyncVar] public int team;
     void Start()
     {
-        
     }
 
     // Update is called once per frame

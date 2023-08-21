@@ -12,7 +12,7 @@ public class ButtonUI : NetworkBehaviour
 
 public void Start() {
     if(!isLocalPlayer) canvas.gameObject.SetActive(false);
-    Debug.Log(gameObject);
+    // Debug.Log(gameObject);
 }
     [Client]
     public void PlayerReadyButton()

@@ -63,7 +63,7 @@ public class TrowableLauncher : Weapon
 
         Vector3 trowForce = Vector3.zero;
 
-        drawTrajectoryLine(target);
+        setTrajectoryLine(target);
 
         float distanceFromTarget = 0;
         Ray rayToTarget = new Ray(muzzle.transform.position, target - muzzle.transform.position);
@@ -102,12 +102,13 @@ public class TrowableLauncher : Weapon
 
     }
 
+/*
+setTrajectoryLine won't drawn anything if the line renderer is not set to visible
+To do that you need to use SetTrajectoryVisible;
+*/
     [Client]
-
-    public void drawTrajectoryLine(Vector3 destination)
+    public void setTrajectoryLine(Vector3 destination)
     {
-
-            SetTrajectoryVisible(true);
         int numberSolution = fts.solve_ballistic_arc(transform.position, projSpeed, destination, -Physics.gravity.y, out Vector3 low, out Vector3 high);
 
 

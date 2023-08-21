@@ -5,6 +5,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Linq;
+using System.Globalization;
 
 public class UnitCommandManager : NetworkBehaviour
 {
@@ -15,13 +16,15 @@ public class UnitCommandManager : NetworkBehaviour
     [SerializeField] private LayerMask GroundLayer = new LayerMask();
     [SerializeField] private LayerMask InteractableLayer = new LayerMask();
 
-[Client]
+    [Client]
     private void Start()
     {
+        //  if(isServer && !isLocalPlayer) gameObject.SetActive(false);
+        if (!isLocalPlayer) gameObject.SetActive(false);
         mainCamera = Camera.main;//The main camera need to have the tag "MainCamera"
     }
 
-[Client]
+    [Client]
     private void Update()
     {
 
@@ -36,69 +39,68 @@ public class UnitCommandManager : NetworkBehaviour
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, InteractableLayer))
         {
             Debug.DrawLine(mainCamera.transform.position, hit.point, Color.red, 1.0f);
-            if (hit.collider.TryGetComponent<Unit>(out Unit unit)) {
-                
+            if (hit.collider.TryGetComponent<Unit>(out Unit targetUnit))
+            {
+
                 // AbilityOrder(unit.transform.position);
-                AttackOrder(unit);
-             }
+                foreach (Unit unit in unitSelection.selectedUnits)
+                {
+                    AttackOrder(unit, targetUnit);
+                }
+            }
 
         }
         else if (Physics.Raycast(ray, out hit, Mathf.Infinity, GroundLayer))
         {
             Debug.DrawLine(mainCamera.transform.position, hit.point, Color.green, 1.0f);
-            MoveOrder(hit.point);
+
+            foreach (Unit unit in unitSelection.selectedUnits)
+            {
+                MoveOrder(unit, hit.point);
+            }
+
 
         }
         else return;
     }
 
-/*
-The possible actions are listed below this comment.
-note that the action themself can call other actions 
-for exemple an attack order on the ground will call move unit until there is a unit to target
-*/
-[Client]
-    public void MoveOrder(Vector3 point)
+    /*
+    The possible actions are listed below this comment.
+    note that the action themself can call other actions 
+    for exemple an attack order on the ground will call move unit until there is a unit to target
+    */
+    [Client]
+    public void MoveOrder(Unit movingUnit, Vector3 point)
     {
-        foreach (Unit unit in unitSelection.selectedUnits)
-        {
-            unit.GetUnitMovement().CmdMove(point);
-        }
+        movingUnit.GetUnitMovement().CmdMove(point);
     }
-[ClientRpc]
-    public void RpcMoveOrder(Vector3 point)
+    [ClientRpc]
+    public void RpcMoveOrder(Unit movingUnit, Vector3 point)
     {
-        MoveOrder(point);
+        MoveOrder(movingUnit, point);
     }
-[Client]
-    public void AttackOrder(Unit targetUnit)
+    [Client]
+    public void AttackOrder(Unit attackingUnit, Unit targetUnit)
     {
-        if (unitSelection.selectedUnits.Contains(targetUnit)) return;
-        foreach (Unit unit in unitSelection.selectedUnits)
-        {
-            unit.GetUnitAttackOrder().CmdAttackTarget(targetUnit);
-        }
-    }  
+        if (attackingUnit == targetUnit) return;
 
-[Client]
-    public void AbilityOrder(Vector3 targetPosition)
-    {
-        foreach (Unit unit in unitSelection.selectedUnits)
-        {
-            unit.GetUnitAttackOrder().CmdUseAbilityTarget(targetPosition);
-        }
-    }  
+        attackingUnit.GetUnitAttackOrder().CmdAttackTarget(targetUnit);
 
+
+    }
+
+    [Client]
     public void AbilityOrder(Unit abilityUser, Vector3 targetPosition)
     {
-            abilityUser.GetUnitAttackOrder().CmdUseAbilityTarget(targetPosition);
-        
-    } 
+        abilityUser.GetUnitAttackOrder().CmdUseAbilityTarget(targetPosition);
+
+    }
 
     //this founction is also used every time the user click without holding shift
-[Client]
-    public void StopOrder() {
-        
+    [Client]
+    public void StopOrder()
+    {
+
         foreach (Unit unit in unitSelection.selectedUnits)
         {
             unit.GetUnitMovement().CmdStopMoving();
@@ -106,8 +108,13 @@ for exemple an attack order on the ground will call move unit until there is a u
         }
     }
 
-[Client]
-    public Unit returnFirstUnit(){
+    [Client]
+    public Unit returnFirstUnit()
+    {
+        // Unit ezstgs = unitSelection.selectedUnits.First();
+        // Debug.Log(ezstgs);
+        // ezstgs.gameObject.SetActive(false);
+        // return ezstgs;
         return unitSelection.selectedUnits.First();
     }
 }

@@ -6,14 +6,19 @@ using UnityEngine;
 abstract public class CommandLinkerUI : NetworkBehaviour
 {
 
+    // [SerializeField] public GameObject unitCommandManagerGameObject;
     [HideInInspector] public UnitCommandManager unitCommandManager;
     [SerializeField] public Sprite sprite;
+    [SyncVar] private Transform myTransform;
     public void Start()
     {
-        unitCommandManager = GameObject.FindWithTag("UnitSelectionManager").GetComponent<UnitCommandManager>();
-        
+        if (isServer)
+        {
+            myTransform = gameObject.transform;
+        }
+
     }
 
-// [Client]
+    // [Client]
     abstract public void useCommand();
 }

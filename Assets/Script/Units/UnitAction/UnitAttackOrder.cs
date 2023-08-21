@@ -24,7 +24,6 @@ public class UnitAttackOrder : UnitAction
     [SerializeField, Tooltip("A laymask for all target that can block shot")] private LayerMask shootingTargetLayer;
     [HideInInspector, SyncVar] private bool ceaseFire = false;//if this is true the unit will stop trying to shoot enemies at range and stop shooting all together (with the main weapon)
 
-
     //au moment d'ecrire le code, virtual n'est pas encore une notion tres clair
     protected new virtual void Start()
     {
@@ -52,7 +51,7 @@ public class UnitAttackOrder : UnitAction
 
         if (!isOwned) return;
 
-        if (targetedUnit && !ceaseFire)
+        if (targetedUnit & !ceaseFire)
         {
             attackTarget();
         }
@@ -66,18 +65,37 @@ public class UnitAttackOrder : UnitAction
     void attackTarget()
     {
         Vector3 shotOriginePosition = mainWeapon.weaponMuzzle.transform.position;
-        Vector3 closestPointOfTarget = targetedUnit.gameObject.GetComponent<Collider>().ClosestPoint(shotOriginePosition);
+        Collider targetedUnitCollider = targetedUnit.gameObject.GetComponent<Collider>();
+        Vector3 closestPointOfTarget = targetedUnitCollider.ClosestPoint(shotOriginePosition);
 
         gameObject.GetComponent<Collider>().enabled = false;
 
         Ray rayToTarget = new Ray(shotOriginePosition, closestPointOfTarget - shotOriginePosition);//The second argument is a delta vector
+
+
         Physics.Raycast(rayToTarget, out RaycastHit hit, weaponAttackRange, shootingTargetLayer);
+
+        Collider hitCollider = hit.collider;
+        //When the muzzle is inside the target, then the rayCast doesn't work this is my workArround
+        if (!hitCollider)
+            if (targetedUnitCollider.bounds.Contains(shotOriginePosition))
+                hitCollider = targetedUnitCollider;
+
+
         Debug.DrawRay(shotOriginePosition, hit.point - shotOriginePosition, Color.red, 5.0f);
-        //Debug.DrawLine(shotOriginePosition, closestPointOfTarget , Color.yellow, 5.0f);
+        // Debug.DrawLine(shotOriginePosition, closestPointOfTarget , Color.yellow, 5.0f);
 
         gameObject.GetComponent<Collider>().enabled = true;
+
+
+
+        Debug.Log("hit.collider.gameObject = ", hitCollider.gameObject);
+        Debug.Log("targetedUnit.gameObject = ", targetedUnit.gameObject);
+
+
+
         //Target in attack range
-        if ((Vector3.Distance(closestPointOfTarget, gameObject.transform.position) < weaponAttackRange) && (hit.collider.gameObject == targetedUnit.gameObject))
+        if ((Vector3.Distance(targetedUnit.transform.position, gameObject.transform.position) < weaponAttackRange) && (hitCollider.gameObject == targetedUnit.gameObject))
         {
             if (CR_goToTarget_isRunning == true)
             {
@@ -119,7 +137,7 @@ public class UnitAttackOrder : UnitAction
     {
         while (true)
         {
-            if (targetedUnit && !targetedUnit)
+            if (targetedUnit)
             {
                 Vector3 closestPointOfTarget = targetedUnit.GetComponent<Collider>().ClosestPoint(gameObject.transform.position);
                 gameObject.GetComponent<UnitMovement>().CmdMove(closestPointOfTarget);
@@ -133,7 +151,7 @@ public class UnitAttackOrder : UnitAction
     {
         while (true)
         {
-            if (targetedUnit && !ceaseFire)//targetedUnit is here to prevent on error that is caused if there is no target as it is a coroutine
+            if (targetedUnit & !ceaseFire)//targetedUnit is here to prevent on error that is caused if there is no target as it is a coroutine
             {
                 // test();
                 mainWeapon.CmdShoot(targetedUnit);
@@ -196,7 +214,7 @@ public class UnitAttackOrder : UnitAction
         Vector3 closestPointOfTarget = targetUnit.GetComponent<Collider>().ClosestPoint(gameObject.transform.position);
         if (Vector3.Distance(closestPointOfTarget, gameObject.transform.position) > weaponAttackRange)
         {
-            base.unitCommandManager.RpcMoveOrder(closestPointOfTarget);
+            base.unitCommandManager.RpcMoveOrder(base.unit, closestPointOfTarget);
         }
     }
 
@@ -205,7 +223,7 @@ public class UnitAttackOrder : UnitAction
     {
         if (Vector3.Distance(targetPosition, gameObject.transform.position) > weaponAttackRange)
         {
-            base.unitCommandManager.RpcMoveOrder(targetPosition);
+            base.unitCommandManager.RpcMoveOrder(base.unit, targetPosition);
         }
     }
 
@@ -219,13 +237,14 @@ public class UnitAttackOrder : UnitAction
     [Command]
     public void CmdUseAbilityTarget(Vector3 targetPosition)
     {
+
         //if target out of range
         if (Vector3.Distance(targetPosition, gameObject.transform.position) > abilityWeapon.getAttackRange())
         {
             TurnOnCeaseFire();
             StopAttack();
 
-            base.unitCommandManager.RpcMoveOrder(targetPosition);
+            base.unitCommandManager.RpcMoveOrder(base.unit, targetPosition);
         }
         Rpc_CR_UseAbility(targetPosition);
     }

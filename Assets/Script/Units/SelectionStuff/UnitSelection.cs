@@ -34,6 +34,12 @@ public class UnitSelection : MonoBehaviour
     {
         mainCamera = Camera.main;
         dragSelect = false;
+
+        // //This is initially a child of Player so we have one selection manager per Client
+        // //unfortunally that create a bug related to position (Player is not at (0,0,0)) so I have to change it here and by the same occasion change its parent 
+        // GameObject managers = GameObject.Find("Managers");
+        // transform.SetParent(managers.transform);
+        this.transform.position = Vector3.zero;
     }
 
     private void Update()
@@ -134,7 +140,7 @@ public class UnitSelection : MonoBehaviour
             DeselectAll();
         }
 
-        Destroy(selectionBox, 0.02f);
+        Destroy(selectionBox, 2f);
     }
     //fonction called up to several time per frame in unity
     private void OnGUI()
@@ -199,9 +205,17 @@ public class UnitSelection : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter(Collider other)
+    // private void OnTriggerStay(Collider other)
+    // {
+    //     if (!other.TryGetComponent<Unit>(out Unit unit)) return;
+    //     if (!unit.isOwned) return;
+    //     selectedUnits.Add(unit);
+    //     unit.Select();
+    // } 
+       private void OnTriggerEnter(Collider other)
     {
         if (!other.TryGetComponent<Unit>(out Unit unit)) return;
+
         if (!unit.isOwned) return;
         selectedUnits.Add(unit);
         unit.Select();
