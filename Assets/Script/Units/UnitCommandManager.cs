@@ -20,7 +20,13 @@ public class UnitCommandManager : NetworkBehaviour
     private void Start()
     {
         //  if(isServer && !isLocalPlayer) gameObject.SetActive(false);
-        if (!isLocalPlayer) gameObject.SetActive(false);
+        // if (!isLocalPlayer) gameObject.SetActive(false);
+        if (!isOwned & !isServer) Destroy(gameObject);
+        if (isLocalPlayer)
+        {
+            this.enabled = false;
+            gameObject.GetComponent<UnitSelection>().enabled = false;
+        }
         mainCamera = Camera.main;//The main camera need to have the tag "MainCamera"
     }
 

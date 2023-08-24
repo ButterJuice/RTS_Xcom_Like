@@ -22,6 +22,7 @@ public class CmdLinkerLaunchGrenade : CommandLinkerUI
     public override void useCommand()
     {
         if(!isOwned) return;
+
         // Debug.Log("Le bouton de l'UI marche");
         // base.unitCommandManager.AbilityOrder(unitCommandManager.transform.position);
 

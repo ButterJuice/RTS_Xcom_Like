@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine;
 
 abstract public class CommandLinkerUI : NetworkBehaviour
@@ -9,14 +10,9 @@ abstract public class CommandLinkerUI : NetworkBehaviour
     // [SerializeField] public GameObject unitCommandManagerGameObject;
     [HideInInspector] public UnitCommandManager unitCommandManager;
     [SerializeField] public Sprite sprite;
-    [SyncVar] private Transform myTransform;
     public void Start()
     {
-        if (isServer)
-        {
-            myTransform = gameObject.transform;
-        }
-
+        Debug.Log("command linker parent = ",this.transform.parent.gameObject);
     }
 
     // [Client]

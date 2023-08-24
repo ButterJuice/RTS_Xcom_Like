@@ -1839,7 +1839,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &963020194
 Transform:
   m_ObjectHideFlags: 0
@@ -3671,8 +3671,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 232393599}
     - target: {fileID: 3503580206499916062, guid: 13536eb0ba4cca741a38d1913c471657, type: 3}
-      propertyPath: playerSpawnMethod
-      value: 1
+      propertyPath: spawnPrefabs.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3503580206499916062, guid: 13536eb0ba4cca741a38d1913c471657, type: 3}
+      propertyPath: spawnPrefabs.Array.data[8]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3503580206499916062, guid: 13536eb0ba4cca741a38d1913c471657, type: 3}
+      propertyPath: spawnPrefabs.Array.data[9]
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 13536eb0ba4cca741a38d1913c471657, type: 3}

@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CommandPannelUI : MonoBehaviour
 {
     [SerializeField] public Canvas canvas;
+    [SerializeField] private Image image;
     
     [SerializeField] public GameObject unitCommandManagerGameObject;
     [HideInInspector] public UnitCommandManager unitCommandManager;
@@ -12,6 +14,7 @@ public class CommandPannelUI : MonoBehaviour
     void Start()
     {
         unitCommandManager = unitCommandManagerGameObject.GetComponent<UnitCommandManager>();
+
     }
 
 
@@ -20,4 +23,5 @@ public class CommandPannelUI : MonoBehaviour
     {
         
     }
+
 }
