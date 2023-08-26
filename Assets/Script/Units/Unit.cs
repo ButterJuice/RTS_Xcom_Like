@@ -7,6 +7,7 @@ using UnityEngine.Events;
 public class Unit : NetworkBehaviour
 {
     [SerializeField] private UnityEvent onSelected = null;
+    [SyncVar] private List<Unit> attackingUnits = new List<Unit>(); //list of unit that attack this unit
     [SerializeField] private UnityEvent onDeselected = null;
     [Header("Script")]
     [SerializeField] private UnitMovement unitMovement = null;
@@ -19,6 +20,7 @@ public class Unit : NetworkBehaviour
 
     private void Start()
     {
+
         if (isOwned)
         {
             foreach (GameObject prefab in teamPrefab)
@@ -33,6 +35,44 @@ public class Unit : NetworkBehaviour
                 prefab.GetComponent<MeshRenderer>().material = teamColors[1];
             }
         }
+    }
+    [Server]
+    public void addAttackingUnit(Unit attackingUnit)
+    {
+        this.attackingUnits.Add(attackingUnit);
+    }
+    [Server]
+    public void Die()
+    {
+        foreach (Unit attackingUnit in attackingUnits)
+        {
+            attackingUnit.unitKilled();
+        }
+        RpcDie();
+
+        Unit myUnittest = GetComponent<Unit>();
+        myUnittest.myPlayer.numberOfOwnedUnit -= 1;
+        Debug.Log(" unit count = " + myUnittest.myPlayer.numberOfOwnedUnit);
+        // GetComponent<Unit>().myPlayer.numberOfOwnedUnit -= 1;
+        NetworkServer.Destroy(gameObject);
+    }
+
+    [ClientRpc]
+    /*
+    TODO:
+    change it to die animation and die should be another procedure on the server (for the case where they are special effect)
+    */
+    void RpcDie()
+    {
+        //those 2 line are mostly for testing purpose they will change in the future
+        gameObject.transform.GetChild(0).gameObject.SetActive(false);//0 here is the normal color cube
+        gameObject.transform.GetChild(1).gameObject.SetActive(true);//1 here is the red color cube
+
+    }
+
+    public void unitKilled()
+    {
+        this.unitAttackOrder.StopAttack();
     }
 
     public UnitMovement GetUnitMovement()

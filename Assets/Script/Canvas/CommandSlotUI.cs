@@ -4,7 +4,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CommandSlotUI : NetworkBehaviour
+public class CommandSlotUI : MonoBehaviour
 {
     [SerializeField] public GameObject commandPannelGameObject;
 
@@ -39,28 +39,15 @@ public class CommandSlotUI : NetworkBehaviour
         commandPannel = commandPannelGameObject.GetComponent<CommandPannelUI>();
 
 
-        if (isServer)
-        {
             commandLinkerObject = Instantiate(commandLinkerObject, transform);
-            NetworkServer.Spawn(commandLinkerObject, connectionToClient);
 
             commandLinker = commandLinkerObject.GetComponent<CommandLinkerUI>();
             commandLinker.unitCommandManager = commandPannel.unitCommandManager;
 
-            ClientStart(commandLinkerObject);
-        }
-
-    }
-    [ClientRpc]
-    void ClientStart(GameObject commandLinkerObject)
-    {
-        commandLinker = commandLinkerObject.GetComponent<CommandLinkerUI>();
-        commandLinker.unitCommandManager = commandPannel.unitCommandManager;
-
         imageComponent.sprite = commandLinker.sprite;
         myButton.onClick.AddListener(commandLinker.useCommand);
+        
 
     }
-
     
 }

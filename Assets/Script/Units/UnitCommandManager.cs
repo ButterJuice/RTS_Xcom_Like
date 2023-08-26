@@ -72,6 +72,7 @@ public class UnitCommandManager : NetworkBehaviour
     [Client]
     public void MoveOrder(Unit movingUnit, Vector3 point)
     {
+
         movingUnit.GetUnitMovement().CmdMove(point);
     }
     [ClientRpc]
@@ -82,6 +83,7 @@ public class UnitCommandManager : NetworkBehaviour
     [Client]
     public void AttackOrder(Unit attackingUnit, Unit targetUnit)
     {
+
         if (attackingUnit == targetUnit) return;
 
         attackingUnit.GetUnitAttackOrder().CmdAttackTarget(targetUnit);

@@ -94,8 +94,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5471090441331751628}
   - component: {fileID: 3943167910536755289}
-  - component: {fileID: 4125156649887396146}
   - component: {fileID: 3133178172493780545}
+  - component: {fileID: 4125156649887396146}
   - component: {fileID: 4230770736902159612}
   - component: {fileID: 8545126749473442139}
   m_Layer: 0
@@ -145,6 +145,29 @@ MonoBehaviour:
   hitableLayer:
     serializedVersion: 2
     m_Bits: 448
+--- !u!114 &3133178172493780545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6008030602772146353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99372274506d69d4bbf8569cab4f8aa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  trajectoryLine: {fileID: 4125156649887396146}
+  hitMarker: {fileID: 3061924065084077148, guid: 2d6fdd4928789ce4f8d5586c385c7ace, type: 3}
+  maxPoints: 50
+  increment: 0.2
+  rayOverlap: 1.05
+  hitableLayer:
+    serializedVersion: 2
+    m_Bits: 448
 --- !u!120 &4125156649887396146
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -152,7 +175,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6008030602772146353}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -244,28 +267,6 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &3133178172493780545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6008030602772146353}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99372274506d69d4bbf8569cab4f8aa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  hitMarker: {fileID: 2273327989234896074, guid: 34b8db54b8e66594ba4757aa1c0e80dd, type: 3}
-  maxPoints: 50
-  increment: 0.2
-  rayOverlap: 1.05
-  hitableLayer:
-    serializedVersion: 2
-    m_Bits: 448
 --- !u!114 &4230770736902159612
 MonoBehaviour:
   m_ObjectHideFlags: 0

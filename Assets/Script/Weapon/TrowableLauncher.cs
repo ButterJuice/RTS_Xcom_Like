@@ -15,13 +15,16 @@ public class TrowableLauncher : Weapon
     [SerializeField, Tooltip("The speed at wich the projectile will be launched")] private float projSpeed;
     [SerializeField] private TrajectoryPredictor trajectoryPredictor;
     private GameObject muzzle;//muzzle refer to the gameObject of the shooting point
-    [SerializeField, Tooltip("The layers that can be hit by the projectile")]LayerMask hitableLayer;
+    [SerializeField, Tooltip("The layers that can be hit by the projectile")] LayerMask hitableLayer;
 
     private void Start()
     {
         muzzle = base.weaponMuzzle;
         CR_shootCooldown = ShootCooldown();
         StartCoroutine(CR_shootCooldown);
+        if(isOwned){
+            SetTrajectoryVisible(true);
+        }
 
     }
 
@@ -102,10 +105,10 @@ public class TrowableLauncher : Weapon
 
     }
 
-/*
-setTrajectoryLine won't drawn anything if the line renderer is not set to visible
-To do that you need to use SetTrajectoryVisible;
-*/
+    /*
+    setTrajectoryLine won't drawn anything if the line renderer is not set to visible
+    To do that you need to use SetTrajectoryVisible;
+    */
     [Client]
     public void setTrajectoryLine(Vector3 destination)
     {
@@ -123,13 +126,13 @@ To do that you need to use SetTrajectoryVisible;
         {
             SetTrajectoryVisible(false);
         }
-         else if (distanceFromTarget > 1)
-         {
-        trajectoryPredictor.PredictTrajectory(trowable, muzzle.transform.position, high);
-         }
-        else 
+        else if (distanceFromTarget > 1)
         {
-        trajectoryPredictor.PredictTrajectory(trowable, muzzle.transform.position, low); // for lower arc
+            trajectoryPredictor.PredictTrajectory(trowable, muzzle.transform.position, high);
+        }
+        else
+        {
+            trajectoryPredictor.PredictTrajectory(trowable, muzzle.transform.position, low); // for lower arc
         }
     }
 

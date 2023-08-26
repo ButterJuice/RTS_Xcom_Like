@@ -22,12 +22,13 @@ public class UnitSpawner : NetworkBehaviour//, IPointerClickHandler
     [Server]
     private void SpawnUnit(GameObject unitPrefab)
     {
+        myPlayer.numberOfOwnedUnit += 1;
         GameObject unitSpawn = Instantiate(unitPrefab, unitSpawnPoint.position, unitSpawnPoint.rotation);
         NetworkServer.Spawn(unitSpawn, connectionToClient);
 
-            if (isServer) Debug.Log("l'unité a été donné a " + GetComponent<NetworkIdentity>().connectionToClient);
+        if (isServer) Debug.Log("l'unité a été donné a " + GetComponent<NetworkIdentity>().connectionToClient);
 
-            
+
         unitPrefab.GetComponent<Unit>().myPlayer = myPlayer;
 
         // if(TryGetComponent<Unit>(out Unit unit)){
@@ -74,6 +75,7 @@ public class UnitSpawner : NetworkBehaviour//, IPointerClickHandler
             gameObject.GetComponentInChildren<MeshRenderer>().material = teamColors[1];
         }
 
+        myPlayer.numberOfOwnedUnit += 1;
         CmdSpawnUnits();
     }
 

@@ -13,25 +13,16 @@ public class UnitStats : NetworkBehaviour
     [SerializeField, Tooltip("this is the weapon used for ability")] public Weapon abilityWeapon;
     [SyncVar] public Transform mainWeaponTransform;
     [SyncVar] public Transform abilityWeaponTransform;
+    [HideInInspector] public Unit myUnit;
 
 
 
 
-    // [SerializeField, Tooltip("This is the default weapon used for auto-attacking")] private Weapon defaultMainWeapon;
-    // [SerializeField, Tooltip("this is the default weapon used for ability")] private Weapon defaultAbilityWeapon;
-    // [HideInInspector] public Weapon mainWeapon;
-    // [HideInInspector] public Weapon abilityWeapon;
 
 
 
     private void Start()
     {
-        // //this is nessecary to instentiate this here as it is used in Start of unitAttackOrder
-        // mainWeapon = Instantiate(mainWeapon, leftEmplacement);//this also remove the notion of prefab
-        // abilityWeapon = Instantiate(abilityWeapon, topRightEmplacement);
-
-        // mainWeapon = Instantiate(mainWeapon, leftEmplacement);//this also remove the notion of prefab
-        // abilityWeapon = Instantiate(abilityWeapon, topRightEmplacement);
         if (isServer)
         {
             mainWeapon = Instantiate(mainWeapon, leftEmplacement);//this also remove the notion of prefab
@@ -76,22 +67,12 @@ public class UnitStats : NetworkBehaviour
         health -= healthLost;
         if (health <= 0)
         {
-            RpcDie();
+            myUnit.Die();
         }
     }
     #endregion
 
-    [ClientRpc]
-    /*
-    TODO:
-    change it to die animation and die should be another procedure on the server (for the case where they are special effect)
-    */
-    void RpcDie()
-    {
-        //those 2 line are mostly for testing purpose they will change in the future
-        gameObject.transform.GetChild(0).gameObject.SetActive(false);
-        gameObject.transform.GetChild(1).gameObject.SetActive(true);
-    }
+
 
 
 

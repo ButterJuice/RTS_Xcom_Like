@@ -683,6 +683,7 @@ MonoBehaviour:
   abilityWeapon: {fileID: 3943167910536755289, guid: 2559f89415502d143aa272d2679716a9, type: 3}
   mainWeaponTransform: {fileID: 0}
   abilityWeaponTransform: {fileID: 0}
+  myUnit: {fileID: 0}
 --- !u!114 &8132424200575236164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -699,6 +700,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   unitStats: {fileID: 2122971028222960724}
+  myUnit: {fileID: 8403540567625983565}
   shootingTargetLayer:
     serializedVersion: 2
     m_Bits: 448

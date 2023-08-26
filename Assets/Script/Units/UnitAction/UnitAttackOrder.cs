@@ -13,6 +13,7 @@ public class UnitAttackOrder : UnitAction
       */
     [SerializeField] private UnitStats unitStats;
 
+    [SerializeField] private Unit myUnit;
     private Weapon mainWeapon;
     private Weapon abilityWeapon;
     private float weaponAttackRange;
@@ -82,15 +83,15 @@ public class UnitAttackOrder : UnitAction
                 hitCollider = targetedUnitCollider;
 
 
-        Debug.DrawRay(shotOriginePosition, hit.point - shotOriginePosition, Color.red, 5.0f);
+        // Debug.DrawRay(shotOriginePosition, hit.point - shotOriginePosition, Color.red, 5.0f);
         // Debug.DrawLine(shotOriginePosition, closestPointOfTarget , Color.yellow, 5.0f);
 
         gameObject.GetComponent<Collider>().enabled = true;
 
 
 
-        Debug.Log("hit.collider.gameObject = ", hitCollider.gameObject);
-        Debug.Log("targetedUnit.gameObject = ", targetedUnit.gameObject);
+        // Debug.Log("hit.collider.gameObject = ", hitCollider.gameObject);
+        // Debug.Log("targetedUnit.gameObject = ", targetedUnit.gameObject);
 
 
 
@@ -123,6 +124,8 @@ public class UnitAttackOrder : UnitAction
             }
         }
     }
+
+
     public void TurnOnCeaseFire()
     {
         ceaseFire = true;
@@ -183,18 +186,18 @@ public class UnitAttackOrder : UnitAction
     {
         if (isOwned)
         {
-
-            while (true)
+            bool shooted = false;
+            while (!shooted)
             {
-
                 if (Vector3.Distance(targetPosition, gameObject.transform.position) <= abilityWeapon.getAttackRange())
                 {
                     abilityWeapon.CmdShoot(targetPosition);
-                    break;
+                    shooted = true;
                 }
                 yield return null;
             }
         }
+        yield return null;
     }
 
     #endregion
@@ -208,6 +211,9 @@ public class UnitAttackOrder : UnitAction
     public void CmdAttackTarget(Unit targetUnit)
     {
         this.targetedUnit = targetUnit;
+
+
+        targetUnit.addAttackingUnit(myUnit);
 
         //if target out of attack range
         //if (Vector3.Distance (targetUnit.transform.position, gameObject.transform.position) > weaponAttackRange)
@@ -257,6 +263,24 @@ public class UnitAttackOrder : UnitAction
     }
     [Server]
     public void StopAttack()
+    {
+        RpcStopAttack();
+
+    }
+    [ClientRpc]
+    private void RpcStopAttack()
+    {
+        StopCoroutine(CR_goToTarget);
+        CR_goToTarget_isRunning = false;
+        gameObject.GetComponent<UnitMovement>().CmdStopMoving();
+
+        StopCoroutine(CR_startShooting);
+        CR_startShooting_isRunning = false;
+
+        CmdDesactivateTargetedUnit();
+    }
+        [Command]
+    private void CmdDesactivateTargetedUnit()
     {
         this.targetedUnit = null;
     }
