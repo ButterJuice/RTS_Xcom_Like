@@ -22,7 +22,8 @@ public class TrowableLauncher : Weapon
         muzzle = base.weaponMuzzle;
         CR_shootCooldown = ShootCooldown();
         StartCoroutine(CR_shootCooldown);
-        if(isOwned){
+        if (isOwned)
+        {
             SetTrajectoryVisible(true);
         }
 
@@ -40,19 +41,13 @@ public class TrowableLauncher : Weapon
     }
 
 
-    [Command]
-    public override void CmdShoot(Unit unit)
+    [Server]
+    public override void Shoot(Unit unit)
     {
         Shoot(unit.transform.position);
     }
-    [Command]
-    public override void CmdShoot(Vector3 position)
-    {
-        Shoot(position);
-    }
-    #region Server
     [Server]
-    private void Shoot(Vector3 position)
+    public override void Shoot(Vector3 position)
     {
         target = position;
         /*
@@ -102,8 +97,8 @@ public class TrowableLauncher : Weapon
 
             readyToShoot = false;
         }
-
     }
+    #region Server
 
     /*
     setTrajectoryLine won't drawn anything if the line renderer is not set to visible

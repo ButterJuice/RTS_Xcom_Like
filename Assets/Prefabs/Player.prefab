@@ -68,8 +68,11 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   team: 2
+  alive: 0
   numberOfOwnedUnit: -1
-  gameOverScreen: {fileID: 6088763351554122109}
+  gameOverScreen: {fileID: 3880992571647578624}
+  unitSelectionGameObject: {fileID: 7295215307863448164}
+  myUnitSelection: {fileID: 0}
 --- !u!1 &7295215307863448164
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,6 +150,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5316300917616634330}
     m_Modifications:
+    - target: {fileID: 553037203691442595, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1472872470151653665, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -267,6 +274,11 @@ PrefabInstance:
     - {fileID: 8417233238524191840, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
     - {fileID: 5903528899931253035, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
+--- !u!1 &3880992571647578624 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7354206961143751390, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
+  m_PrefabInstance: {fileID: 6040288529460130014}
+  m_PrefabAsset: {fileID: 0}
 --- !u!223 &5162211349081692670 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 1472872470151653664, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
@@ -275,11 +287,6 @@ Canvas:
 --- !u!224 &5162211349081692671 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1472872470151653665, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
-  m_PrefabInstance: {fileID: 6040288529460130014}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6088763351554122109 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 553037203691442595, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
   m_PrefabInstance: {fileID: 6040288529460130014}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &8023018256116024127 stripped

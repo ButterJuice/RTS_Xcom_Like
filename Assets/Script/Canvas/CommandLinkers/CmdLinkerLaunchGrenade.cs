@@ -26,6 +26,10 @@ public class CmdLinkerLaunchGrenade : CommandLinkerUI
 
         Unit abilityUser = base.unitCommandManager.returnFirstUnit();
 
+        if (abilityUser == null)
+        {
+            return;
+        }
 
         trowableLauncher = abilityUser.GetComponentInChildren<TrowableLauncher>();
         StartCoroutine(chooseTargetCoroutine(abilityUser));

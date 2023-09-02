@@ -142,7 +142,7 @@ public class UnitSelection : MonoBehaviour
             DeselectAll();
         }
 
-        Destroy(selectionBox, 2f);
+        Destroy(selectionBox, 0.1f);
     }
     //fonction called up to several time per frame in unity
     private void OnGUI()
@@ -181,6 +181,12 @@ public class UnitSelection : MonoBehaviour
             selectedUnit.Deselect();
         }
         selectedUnits.Clear();
+    }
+    public void Deselect(Unit selectedUnit)
+    {
+        selectedUnits.Remove(selectedUnit);
+        selectedUnit.Deselect();
+        
     }
 
     //generate a mesh from the 4 bottom points

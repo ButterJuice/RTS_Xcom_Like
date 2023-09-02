@@ -9,8 +9,8 @@ public class MachineGun : Weapon
     
 
     #region Server
-    [Command]
-    override public void CmdShoot(Unit targetUnit)
+    [Server]
+    override public void Shoot(Unit targetUnit)
     {
         targetUnit.GetUnitStats().takeDamage(10);
         Vector3 closestPoint = targetUnit.GetComponent<Collider>().ClosestPoint(base.weaponMuzzle.transform.position);
@@ -18,8 +18,8 @@ public class MachineGun : Weapon
     }
 
 
-    [Command]
-    public override void CmdShoot(Vector3 position)
+    [Server]
+    public override void Shoot(Vector3 position)
     {
         RpcShootAnimation(position);
         Debug.LogWarning("CmdShoot(Position) de MachineGun a été appellée, ce script n'est pas encore entierement implémenté");

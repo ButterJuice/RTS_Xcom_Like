@@ -13,10 +13,10 @@ abstract public class Weapon : NetworkBehaviour
         return attackRange.radius;
     }
 
-//[Command]
-    abstract public void CmdShoot(Unit unit);
+//[Server]
+    abstract public void Shoot(Unit unit);
 
-//[Command]
-    abstract public void CmdShoot(Vector3 position);
+//[Server]
+    abstract public void Shoot(Vector3 position);
 
 }

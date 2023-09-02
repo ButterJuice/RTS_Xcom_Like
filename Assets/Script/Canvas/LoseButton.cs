@@ -8,7 +8,6 @@ public class LoseButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -19,4 +18,5 @@ public class LoseButton : MonoBehaviour
     public void hideLoseScreen(){
         loseUI.SetActive(false);
     }
+    
 }

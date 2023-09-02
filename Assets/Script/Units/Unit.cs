@@ -13,13 +13,17 @@ public class Unit : NetworkBehaviour
     [SerializeField] private UnitMovement unitMovement = null;
     [SerializeField] private UnitAttackOrder unitAttackOrder = null;
     [SerializeField] private UnitStats unitStats = null;
-    [HideInInspector] public PlayersStats myPlayer;
+    [HideInInspector] public PlayersStats myPlayerStats;
+    [HideInInspector] public UnitSelection myUnitSelection;
     [SerializeField, Tooltip("0 is me , 1 is others")] Material[] teamColors;
     [SerializeField, Tooltip("Prefab that will change material depending on team")] GameObject[] teamPrefab;
 
 
     private void Start()
     {
+        // if(isServer){
+        // myPlayer.numberOfOwnedUnit += 1;
+        // }
 
         if (isOwned)
         {
@@ -37,23 +41,35 @@ public class Unit : NetworkBehaviour
         }
     }
     [Server]
-    public void addAttackingUnit(Unit attackingUnit)
+    public void AddAttackingUnit(Unit attackingUnit)
     {
         this.attackingUnits.Add(attackingUnit);
     }
     [Server]
+    public void RemoveAttackingUnit(Unit attackingUnit)
+    {
+        this.attackingUnits.Remove(attackingUnit);
+    }
+    [Server]
     public void Die()
     {
+        // attackingUnits.Remove(this);
+        
+        this.unitAttackOrder.Die();
+
         foreach (Unit attackingUnit in attackingUnits)
         {
-            attackingUnit.unitKilled();
+
+
+            if (attackingUnit != null)
+            {
+                if (attackingUnit.gameObject != null)
+                    attackingUnit.UnitKilled();
+            }
         }
         RpcDie();
 
-        Unit myUnittest = GetComponent<Unit>();
-        myUnittest.myPlayer.numberOfOwnedUnit -= 1;
-        Debug.Log(" unit count = " + myUnittest.myPlayer.numberOfOwnedUnit);
-        // GetComponent<Unit>().myPlayer.numberOfOwnedUnit -= 1;
+        myPlayerStats.UnitDie(this);
         NetworkServer.Destroy(gameObject);
     }
 
@@ -64,15 +80,16 @@ public class Unit : NetworkBehaviour
     */
     void RpcDie()
     {
+        myPlayerStats.myUnitSelection.Deselect(this);
         //those 2 line are mostly for testing purpose they will change in the future
         gameObject.transform.GetChild(0).gameObject.SetActive(false);//0 here is the normal color cube
         gameObject.transform.GetChild(1).gameObject.SetActive(true);//1 here is the red color cube
 
     }
 
-    public void unitKilled()
+    public void UnitKilled()//When this unit targets get killed
     {
-        this.unitAttackOrder.StopAttack();
+        this.unitAttackOrder.ServerStopAttack();
     }
 
     public UnitMovement GetUnitMovement()

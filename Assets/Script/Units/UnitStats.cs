@@ -35,6 +35,7 @@ public class UnitStats : NetworkBehaviour
 
             CorrectPositon(mainWeapon.gameObject, abilityWeapon.gameObject);
         }
+        myUnit = this.GetComponent<Unit>();
 
         GetComponent<UnitAttackOrder>().WeaponInnit();
 
