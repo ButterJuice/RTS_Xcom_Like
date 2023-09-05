@@ -52,23 +52,22 @@ public class UnitAttackOrder : UnitAction
     private void Update()
     {
 
-        if (!isOwned) return;
-        // if (isServer)
-        // {
-
+        // if (!isOwned) return;
+        if (isServer)
+        {
             if (targetedUnit & !ceaseFire)
             {
                 attackTarget();
             }
             else return;
-        // }
+        }
 
     }
 
     /*
     This function is the manager of auto attack, it will make the unit follow the target and shoot it if in range
     */
-    [Command]
+    [Server]
     void attackTarget()
     {
         Vector3 shotOriginePosition = mainWeapon.weaponMuzzle.transform.position;
@@ -78,7 +77,6 @@ public class UnitAttackOrder : UnitAction
         gameObject.GetComponent<Collider>().enabled = false;
 
         Ray rayToTarget = new Ray(shotOriginePosition, closestPointOfTarget - shotOriginePosition);//The second argument is a delta vector
-
 
         Physics.Raycast(rayToTarget, out RaycastHit hit, weaponAttackRange, shootingTargetLayer);
 
@@ -100,16 +98,19 @@ public class UnitAttackOrder : UnitAction
         // Debug.Log("targetedUnit.gameObject = ", targetedUnit.gameObject);
 
 
-
         //Target in attack range
         if ((Vector3.Distance(targetedUnit.transform.position, gameObject.transform.position) < weaponAttackRange) && (hitCollider.gameObject == targetedUnit.gameObject))
         {
+
+
             if (CR_goToTarget_isRunning == true)
             {
                 StopCoroutine(CR_goToTarget);
                 CR_goToTarget_isRunning = false;
-                gameObject.GetComponent<UnitMovement>().ClientStopMoving();
+                gameObject.GetComponent<UnitMovement>().ServerStopMoving();
             }
+
+
             if (CR_startShooting_isRunning == false)
             {
                 StartCoroutine(CR_startShooting);
@@ -119,6 +120,8 @@ public class UnitAttackOrder : UnitAction
         //Target out of attack range
         else
         {
+
+
             if (CR_startShooting_isRunning == true)
                 StopCoroutine(CR_startShooting);
             CR_startShooting_isRunning = false;
@@ -139,6 +142,11 @@ public class UnitAttackOrder : UnitAction
     public void TurnOffCeaseFire()
     {
         ceaseFire = false;
+    }
+    [Command]
+    public void CmdTurnOffCeaseFire()
+    {
+        TurnOffCeaseFire();
     }
 
     [Server]
@@ -164,7 +172,7 @@ public class UnitAttackOrder : UnitAction
     {
         while (true)
         {
-            if (targetedUnit & !ceaseFire)//targetedUnit is here to prevent on error that is caused if there is no target as it is a coroutine
+            if (targetedUnit & !ceaseFire & gameObject.GetComponent<UnitMovement>().agent.isStopped)//targetedUnit is here to prevent on error that is caused if there is no target as it is a coroutine
             {
                 // test();
                 mainWeapon.Shoot(targetedUnit);
@@ -201,11 +209,14 @@ public class UnitAttackOrder : UnitAction
             {
                 if (Vector3.Distance(targetPosition, gameObject.transform.position) <= abilityWeapon.getAttackRange())
                 {
-                    abilityWeapon.Shoot(targetPosition);
+                    abilityWeapon.CmdShoot(targetPosition);
                     shooted = true;
+                    CmdTurnOffCeaseFire();
                 }
                 yield return null;
             }
+
+            gameObject.GetComponent<UnitMovement>().ClientStopMoving();
         }
         yield return null;
     }
@@ -225,30 +236,41 @@ public class UnitAttackOrder : UnitAction
 
         targetUnit.AddAttackingUnit(myUnit);
 
-        //if target out of attack range
-        //if (Vector3.Distance (targetUnit.transform.position, gameObject.transform.position) > weaponAttackRange)
-        Vector3 closestPointOfTarget = targetUnit.GetComponent<Collider>().ClosestPoint(gameObject.transform.position);
-        if (Vector3.Distance(closestPointOfTarget, gameObject.transform.position) > weaponAttackRange)
-        {
-            base.unitCommandManager.RpcMoveOrder(base.unit, closestPointOfTarget);
-        }
+        // //if target out of attack range
+        // //if (Vector3.Distance (targetUnit.transform.position, gameObject.transform.position) > weaponAttackRange)
+        // Vector3 closestPointOfTarget = targetUnit.GetComponent<Collider>().ClosestPoint(gameObject.transform.position);
+        // if (Vector3.Distance(closestPointOfTarget, gameObject.transform.position) > weaponAttackRange)
+        // {
+        //     base.unitCommandManager.RpcMoveOrder(base.unit, closestPointOfTarget);
+        // }
     }
 
     [Command]
-    public void CmdAttackTarget(Vector3 targetPosition)
+    public void cmdStopAttacking()
     {
-        if (Vector3.Distance(targetPosition, gameObject.transform.position) > weaponAttackRange)
-        {
-            base.unitCommandManager.RpcMoveOrder(base.unit, targetPosition);
-        }
+        serverStopAttacking();
     }
+    [Server]
+    public void serverStopAttacking()
+    {
+        // ceaseFire = true;
+        targetedUnit = null;
+    }
+    // [Command]
+    // public void CmdAttackTarget(Vector3 targetPosition)
+    // {
+    //     if (Vector3.Distance(targetPosition, gameObject.transform.position) > weaponAttackRange)
+    //     {
+    //         base.unitCommandManager.RpcMoveOrder(base.unit, targetPosition);
+    //     }
+    // }
 
 
-    [Command]
-    public void CmdUseAbilityTarget(Unit targetUnit)
-    {
-        //   abilityWeapon.CmdShoot(targetUnit);
-    }
+    // [Command]
+    // public void CmdUseAbilityTarget(Unit targetUnit)
+    // {
+    //     //   abilityWeapon.CmdShoot(targetUnit);
+    // }
 
     [Command]
     public void CmdUseAbilityTarget(Vector3 targetPosition)
@@ -258,7 +280,7 @@ public class UnitAttackOrder : UnitAction
         if (Vector3.Distance(targetPosition, gameObject.transform.position) > abilityWeapon.getAttackRange())
         {
             TurnOnCeaseFire();
-            ServerStopAttack();
+            ServerStopAll();
 
             base.unitCommandManager.RpcMoveOrder(base.unit, targetPosition);
         }
@@ -267,12 +289,13 @@ public class UnitAttackOrder : UnitAction
 
 
     [Command]
-    public void CmdStopAttack()
+    public void CmdStopAll()
     {
-        ServerStopAttack();
+        ServerStopAll();
     }
+    //a more fitting name would be stop everything
     [Server]
-    public void ServerStopAttack()
+    public void ServerStopAll()
     {
         gameObject.GetComponent<UnitMovement>().ServerStopMoving();
 
@@ -294,7 +317,7 @@ public class UnitAttackOrder : UnitAction
         if (targetedUnit)
         {
             targetedUnit.RemoveAttackingUnit(myUnit);
-            ServerStopAttack();
+            ServerStopAll();
         }
     }
 

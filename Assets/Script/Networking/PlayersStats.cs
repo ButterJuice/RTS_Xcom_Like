@@ -43,24 +43,17 @@ public class PlayersStats : NetworkBehaviour
             }
             if (isLocalPlayer)
             {
-                // RpcShowDefeat();
                 gameOverScreen.SetActive(true);
             }
             // }
         }
     }
-    [ClientRpc]
-    public void RpcShowDefeat()
-    {
-        gameOverScreen.SetActive(true);
-    }
-
     [Server]
     public void UnitDie(Unit deadUnit)
     {
         numberOfOwnedUnit -= 1;
 
-        Debug.Log(" unit count = " + numberOfOwnedUnit);
+        // Debug.Log(" unit count = " + numberOfOwnedUnit);
         // GetComponent<Unit>().myPlayer.numberOfOwnedUnit -= 1;
     }
 }

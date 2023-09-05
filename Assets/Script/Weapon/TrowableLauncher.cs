@@ -41,6 +41,11 @@ public class TrowableLauncher : Weapon
     }
 
 
+    [Command]
+    public override void CmdShoot(Vector3 position)
+    {
+        Shoot(position);
+    }
     [Server]
     public override void Shoot(Unit unit)
     {

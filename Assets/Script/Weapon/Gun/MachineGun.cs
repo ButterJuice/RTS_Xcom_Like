@@ -25,6 +25,12 @@ public class MachineGun : Weapon
         Debug.LogWarning("CmdShoot(Position) de MachineGun a été appellée, ce script n'est pas encore entierement implémenté");
     }
 
+    [Command]
+    public override void CmdShoot(Vector3 position)
+    {
+        Shoot(position);
+    }
+
     #endregion
 
 

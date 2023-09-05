@@ -89,7 +89,7 @@ public class Unit : NetworkBehaviour
 
     public void UnitKilled()//When this unit targets get killed
     {
-        this.unitAttackOrder.ServerStopAttack();
+        this.unitAttackOrder.ServerStopAll();
     }
 
     public UnitMovement GetUnitMovement()

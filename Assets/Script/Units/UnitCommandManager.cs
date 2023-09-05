@@ -75,6 +75,8 @@ public class UnitCommandManager : NetworkBehaviour
     public void MoveOrder(Unit movingUnit, Vector3 point)
     {
 
+        if (!movingUnit.isOwned) return;
+        movingUnit.GetUnitAttackOrder().cmdStopAttacking();
         movingUnit.GetUnitMovement().CmdMove(point);
     }
     [ClientRpc]
@@ -107,8 +109,9 @@ public class UnitCommandManager : NetworkBehaviour
 
         foreach (Unit unit in unitSelection.selectedUnits)
         {
+
             unit.GetUnitMovement().ServerStopMoving();
-            unit.GetUnitAttackOrder().ServerStopAttack();
+            unit.GetUnitAttackOrder().ServerStopAll();
         }
     }
 

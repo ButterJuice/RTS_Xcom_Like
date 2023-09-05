@@ -83,13 +83,16 @@ public class UnitSpawner : NetworkBehaviour//, IPointerClickHandler
             Debug.Log(myPlayerStats);
             CmdSpawnUnits(myPlayerStats);
 
-            if (isServer)
-            {
-                myPlayerStats.alive = 1;
-            }
+            PlayerReady(myPlayerStats);
         }
     }
 
+    [Command]
+    public void PlayerReady(PlayersStats playersStats)
+    {
+        playersStats.alive = 1;
+
+    }
 
 
 
