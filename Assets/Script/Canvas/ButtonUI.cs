@@ -8,22 +8,13 @@ public class ButtonUI : NetworkBehaviour
 
     [SerializeField] private GameObject unitSpawnerPrefab = null;
     [SerializeField] private Canvas canvas;
-    [SerializeField] private GameObject buttonGameObject;
+    private PlayersStats playersStats;
 
 
     public void Start()
     {
-        // if(!isLocalPlayer) canvas.gameObject.SetActive(false);
-        if (!isOwned & !isServer)
-        {
-            Destroy(buttonGameObject);
-            Destroy(gameObject);
-        }
-        if (!isLocalPlayer)
-        {
-            this.enabled = false;
-            buttonGameObject.SetActive(false);
-        }
+        if (!isLocalPlayer) canvas.gameObject.SetActive(false);
+        playersStats = GetComponentInParent<PlayersStats>();
         // Debug.Log(gameObject);
     }
     [Client]
@@ -36,6 +27,7 @@ public class ButtonUI : NetworkBehaviour
     [Command]
     public void PlayerReady(NetworkConnectionToClient conn)
     {
+
 
         GameObject unitSpawnInstance = Instantiate(unitSpawnerPrefab, conn.identity.transform.position, conn.identity.transform.rotation);
         NetworkServer.Spawn(unitSpawnInstance, conn);

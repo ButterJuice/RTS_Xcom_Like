@@ -62,7 +62,7 @@ public class UnitSelection : MonoBehaviour
             {
                 ClickSelect();
             }
-            else 
+            else
             {
                 BoxSelect();
             }
@@ -77,12 +77,14 @@ public class UnitSelection : MonoBehaviour
     private void ClickSelect()
     {
         Ray ray = Camera.main.ScreenPointToRay(p1);
+        if (!Input.GetKey(KeyCode.LeftShift))
+        {
+            DeselectAll();
+        }
+
         if (Physics.Raycast(ray, out RaycastHit hit, 50000.0f, interactableLayer))
         {
-            if (!Input.GetKey(KeyCode.LeftShift))
-            {
-                DeselectAll();
-            }
+
             if (!hit.collider.TryGetComponent<Unit>(out Unit unit)) return;
             if (!unit.isOwned) return;
             if (Input.GetKey(KeyCode.LeftShift))
@@ -140,7 +142,7 @@ public class UnitSelection : MonoBehaviour
             DeselectAll();
         }
 
-        Destroy(selectionBox, 2f);
+        Destroy(selectionBox, 0.1f);
     }
     //fonction called up to several time per frame in unity
     private void OnGUI()
@@ -180,6 +182,12 @@ public class UnitSelection : MonoBehaviour
         }
         selectedUnits.Clear();
     }
+    public void Deselect(Unit selectedUnit)
+    {
+        selectedUnits.Remove(selectedUnit);
+        selectedUnit.Deselect();
+        
+    }
 
     //generate a mesh from the 4 bottom points
     Mesh GenerateSelectionMesh(Vector3[] corners, Vector3[] vecs)
@@ -212,7 +220,7 @@ public class UnitSelection : MonoBehaviour
     //     selectedUnits.Add(unit);
     //     unit.Select();
     // } 
-       private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (!other.TryGetComponent<Unit>(out Unit unit)) return;
 

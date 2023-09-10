@@ -68,6 +68,11 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   team: 2
+  alive: 0
+  numberOfOwnedUnit: -1
+  gameOverScreen: {fileID: 3880992571647578624}
+  unitSelectionGameObject: {fileID: 7295215307863448164}
+  myUnitSelection: {fileID: 0}
 --- !u!1 &7295215307863448164
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,9 +150,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5316300917616634330}
     m_Modifications:
-    - target: {fileID: 1335464977182546616, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
-      propertyPath: m_Enabled
-      value: 1
+    - target: {fileID: 553037203691442595, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1472872470151653665, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
       propertyPath: m_Pivot.x
@@ -241,22 +246,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2471482378495527548, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2589752755648928178, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2824167318297317847, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
       propertyPath: canvas
       value: 
       objectReference: {fileID: 5162211349081692670}
-    - target: {fileID: 2824167318297317847, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
-      propertyPath: buttonGameObject
-      value: 
-      objectReference: {fileID: 4029655307806590019}
     - target: {fileID: 2886682918664247571, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
       propertyPath: _assetId
       value: 81428104
@@ -269,20 +262,21 @@ PrefabInstance:
       propertyPath: _assetId
       value: 81428104
       objectReference: {fileID: 0}
+    - target: {fileID: 8417233238524191840, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
+      propertyPath: _assetId
+      value: 81428104
+      objectReference: {fileID: 0}
     - target: {fileID: 8456546575586914186, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
       propertyPath: unitCommandManagerGameObject
       value: 
       objectReference: {fileID: 7295215307863448164}
-    - target: {fileID: 8581493928278235343, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
-      propertyPath: _assetId
-      value: 81428104
-      objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 8581493928278235343, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
+    - {fileID: 8417233238524191840, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
+    - {fileID: 5903528899931253035, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
---- !u!1 &4029655307806590019 stripped
+--- !u!1 &3880992571647578624 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 7223593813883892893, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
+  m_CorrespondingSourceObject: {fileID: 7354206961143751390, guid: 0908d1426163ed84f98d30c2c69db6c5, type: 3}
   m_PrefabInstance: {fileID: 6040288529460130014}
   m_PrefabAsset: {fileID: 0}
 --- !u!223 &5162211349081692670 stripped

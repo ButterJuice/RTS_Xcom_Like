@@ -16,9 +16,9 @@ note that I modified a few part in the script to go with my needs
 public class TrajectoryPredictor : NetworkBehaviour
 {
     #region Members
-    LineRenderer trajectoryLine;
+    [SerializeField] LineRenderer trajectoryLine;
     [SerializeField, Tooltip("The marker will show where the projectile will hit")]
-    Transform hitMarker;
+    GameObject hitMarker;
     [SerializeField, Range(10, 100), Tooltip("The maximum number of points the LineRenderer can have")]
     int maxPoints = 50;
     [SerializeField, Range(0.01f, 0.5f), Tooltip("The time increment used to calculate the trajectory")]
@@ -34,7 +34,9 @@ public class TrajectoryPredictor : NetworkBehaviour
         if (trajectoryLine == null)
             trajectoryLine = GetComponent<LineRenderer>();
 
-        SetTrajectoryVisible(true);
+        hitMarker = Instantiate(hitMarker,this.transform);
+        hitMarker.gameObject.SetActive(false);
+
     }
 
 
@@ -77,7 +79,7 @@ If I want a prediction based on a direction and a velocity then I can use this:
             }
 
             //If nothing is hit, continue rendering the arc without a visual marker
-            hitMarker.gameObject.SetActive(false);
+            // hitMarker.SetActive(false);
             position = nextPosition;
             UpdateLineRender(maxPoints, (i, position)); //Unneccesary to set count here, but not harmful
         }
@@ -104,19 +106,21 @@ If I want a prediction based on a direction and a velocity then I can use this:
 
     private void MoveHitMarker(RaycastHit hit)
     {
-        hitMarker.gameObject.SetActive(true);
+        // hitMarker.SetActive(true);
 
         // Offset marker from surface
         float offset = 0.025f;
-        hitMarker.position = hit.point + hit.normal * offset;
-        hitMarker.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
+        hitMarker.transform.position = hit.point + hit.normal * offset;
+        hitMarker.transform.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
     }
 
 [Client]
     public void SetTrajectoryVisible(bool visible)
     {
+        //  if (visible == false) Destroy(hitMarker);
+        if(hitMarker == null) return;
+        hitMarker.SetActive(visible);
         trajectoryLine.enabled = visible;
-        hitMarker.gameObject.SetActive(visible);
     }
 
 }

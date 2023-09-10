@@ -18,26 +18,25 @@ public class CmdLinkerLaunchGrenade : CommandLinkerUI
         mainCamera = Camera.main;
     }
 
-    [Client]
     public override void useCommand()
     {
-        if(!isOwned) return;
-
         // Debug.Log("Le bouton de l'UI marche");
         // base.unitCommandManager.AbilityOrder(unitCommandManager.transform.position);
 
 
         Unit abilityUser = base.unitCommandManager.returnFirstUnit();
 
+        if (abilityUser == null)
+        {
+            return;
+        }
 
         trowableLauncher = abilityUser.GetComponentInChildren<TrowableLauncher>();
         StartCoroutine(chooseTargetCoroutine(abilityUser));
     }
 
-    [Client]
     IEnumerator chooseTargetCoroutine(Unit abilityUser)
     {
-        trowableLauncher.SetTrajectoryVisible(true);
         targeting = true;
         while (targeting)
         {
@@ -47,17 +46,18 @@ public class CmdLinkerLaunchGrenade : CommandLinkerUI
 
             if (Physics.Raycast(ray, out RaycastHit hit, 50000.0f, groundLayer))
             {
+                trowableLauncher.SetTrajectoryVisible(true);
                 trowableLauncher.setTrajectoryLine(hit.point);
                 // Debug.DrawRay(mainCamera.transform.position, hit.point - mainCamera.transform.position,Color.red,5f);
                 if (Input.GetKey(KeyCode.G))
                 {
                     // Debug.DrawRay(mainCamera.transform.position, hit.point -  mainCamera.transform.position,Color.yellow,5f);
-                     
-                     abilityUser.PrintMyself();
+
+                    //  abilityUser.PrintMyself();
 
                     base.unitCommandManager.AbilityOrder(abilityUser, hit.point);
-                    targeting = false;
                     trowableLauncher.SetTrajectoryVisible(false);
+                    targeting = false;
                 }
             }
 

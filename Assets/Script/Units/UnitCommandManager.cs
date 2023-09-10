@@ -36,7 +36,7 @@ public class UnitCommandManager : NetworkBehaviour
 
 
         if (!Mouse.current.rightButton.wasPressedThisFrame) { return; }
-        StopOrder();//Could be moved elsewere if we only want to stop action if the requested action is valid 
+        CmdStopOrder();//Could be moved elsewere if we only want to stop action if the requested action is valid 
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         RaycastHit hit;
 
@@ -51,6 +51,7 @@ public class UnitCommandManager : NetworkBehaviour
                 // AbilityOrder(unit.transform.position);
                 foreach (Unit unit in unitSelection.selectedUnits)
                 {
+
                     AttackOrder(unit, targetUnit);
                 }
             }
@@ -70,6 +71,7 @@ public class UnitCommandManager : NetworkBehaviour
         else return;
     }
 
+
     /*
     The possible actions are listed below this comment.
     note that the action themself can call other actions 
@@ -78,6 +80,9 @@ public class UnitCommandManager : NetworkBehaviour
     [Client]
     public void MoveOrder(Unit movingUnit, Vector3 point)
     {
+
+        if (!movingUnit.isOwned) return;
+        movingUnit.GetUnitAttackOrder().cmdStopAttacking();
         movingUnit.GetUnitMovement().CmdMove(point);
     }
     [ClientRpc]
@@ -88,6 +93,7 @@ public class UnitCommandManager : NetworkBehaviour
     [Client]
     public void AttackOrder(Unit attackingUnit, Unit targetUnit)
     {
+
         if (attackingUnit == targetUnit) return;
 
         attackingUnit.GetUnitAttackOrder().CmdAttackTarget(targetUnit);
@@ -103,24 +109,28 @@ public class UnitCommandManager : NetworkBehaviour
     }
 
     //this founction is also used every time the user click without holding shift
-    [Client]
-    public void StopOrder()
+    [Command]
+    public void CmdStopOrder()
     {
 
         foreach (Unit unit in unitSelection.selectedUnits)
         {
-            unit.GetUnitMovement().CmdStopMoving();
-            unit.GetUnitAttackOrder().CmdStopAttack();
+
+            unit.GetUnitMovement().ServerStopMoving();
+            unit.GetUnitAttackOrder().ServerStopAll();
         }
     }
 
     [Client]
     public Unit returnFirstUnit()
     {
-        // Unit ezstgs = unitSelection.selectedUnits.First();
-        // Debug.Log(ezstgs);
-        // ezstgs.gameObject.SetActive(false);
-        // return ezstgs;
-        return unitSelection.selectedUnits.First();
+        try
+        {
+            return unitSelection.selectedUnits.First();
+        }
+        catch (InvalidOperationException)
+        {
+            return null;
+        }
     }
 }

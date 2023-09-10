@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
+using Telepathy;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,39 +9,48 @@ public class UnitSpawner : NetworkBehaviour//, IPointerClickHandler
 {
     [SerializeField] private GameObject[] unitPrefabs = null;
     [SerializeField] private Transform unitSpawnPoint = null;
-    public PlayersStats myPlayer;
+    public PlayersStats myPlayerStats;
+    [SerializeField] public UnitSelection myUnitSelection;
     [SerializeField, Tooltip("0 is me , 1 is others")] Material[] teamColors;//this is currently a duplica of what exist in Unit, it should be removed in the future
 
 
     #region Server
 
-    [Command]
-    private void CmdSpawnUnit(GameObject unitPrefab)
-    {
-        SpawnUnit(unitPrefab);
-    }
+
     [Server]
-    private void SpawnUnit(GameObject unitPrefab)
+    private void SpawnUnit(GameObject unitPrefab, PlayersStats clientPlayerStats)
     {
         GameObject unitSpawn = Instantiate(unitPrefab, unitSpawnPoint.position, unitSpawnPoint.rotation);
         NetworkServer.Spawn(unitSpawn, connectionToClient);
 
-            if (isServer) Debug.Log("l'unité a été donné a " + GetComponent<NetworkIdentity>().connectionToClient);
+        // if (isServer) Debug.Log("l'unité a été donné a " + GetComponent<NetworkIdentity>().connectionToClient);
 
-            
-        unitPrefab.GetComponent<Unit>().myPlayer = myPlayer;
+
+        Unit unitSpawnUnitCompenent = unitSpawn.GetComponent<Unit>();
+        unitSpawnUnitCompenent.myPlayerStats = clientPlayerStats;
+
+        myUnitSelection = clientPlayerStats.myUnitSelection;
+        unitSpawnUnitCompenent.myUnitSelection = myUnitSelection;
+
+        clientPlayerStats.numberOfOwnedUnit += 1;
 
         // if(TryGetComponent<Unit>(out Unit unit)){
         //     unit.GetUnitStats().ServerStart();
         // }
     }
+
     [Command]
-    private void CmdSpawnUnits()
+    private void CmdSpawnUnit(GameObject unitPrefab)
+    {
+        SpawnUnit(unitPrefab, myPlayerStats);
+    }
+    [Command]
+    private void CmdSpawnUnits(PlayersStats clientPlayerStats)
     {
         float gap = 0f;
         foreach (GameObject unit in unitPrefabs)
         {
-            SpawnUnit(unit);
+            SpawnUnit(unit, clientPlayerStats);
             unitSpawnPoint.position += new Vector3(2.0f, 0f, 0f);
             gap += 2f;
         }
@@ -53,30 +63,36 @@ public class UnitSpawner : NetworkBehaviour//, IPointerClickHandler
 
     private void Start()
     {
-        if (!isOwned) return;
-
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject player in players)
+        if (!isOwned)
         {
-            PlayersStats playersStats = player.GetComponent<PlayersStats>();
-            if (playersStats.isOwned)
-            {
-                myPlayer = playersStats;
-            }
-        }
-        if (isOwned)
-        {
-            gameObject.GetComponentInChildren<MeshRenderer>().material = teamColors[0];
+            gameObject.GetComponentInChildren<MeshRenderer>().material = teamColors[1];
+            return;
         }
         else
         {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
+            {
+                PlayersStats playersStats = player.GetComponent<PlayersStats>();
+                if (playersStats.isLocalPlayer)
+                {
+                    myPlayerStats = playersStats;
+                }
+            }
+            gameObject.GetComponentInChildren<MeshRenderer>().material = teamColors[0];
+            Debug.Log(myPlayerStats);
+            CmdSpawnUnits(myPlayerStats);
 
-            gameObject.GetComponentInChildren<MeshRenderer>().material = teamColors[1];
+            PlayerReady(myPlayerStats);
         }
-
-        CmdSpawnUnits();
     }
 
+    [Command]
+    public void PlayerReady(PlayersStats playersStats)
+    {
+        playersStats.alive = 1;
+
+    }
 
 
 

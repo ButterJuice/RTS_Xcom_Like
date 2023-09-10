@@ -7,18 +7,24 @@ using UnityEngine.Events;
 public class Unit : NetworkBehaviour
 {
     [SerializeField] private UnityEvent onSelected = null;
+    [SyncVar] private List<Unit> attackingUnits = new List<Unit>(); //list of unit that attack this unit
     [SerializeField] private UnityEvent onDeselected = null;
     [Header("Script")]
     [SerializeField] private UnitMovement unitMovement = null;
     [SerializeField] private UnitAttackOrder unitAttackOrder = null;
     [SerializeField] private UnitStats unitStats = null;
-    [HideInInspector] public PlayersStats myPlayer;
+    [HideInInspector] public PlayersStats myPlayerStats;
+    [HideInInspector] public UnitSelection myUnitSelection;
     [SerializeField, Tooltip("0 is me , 1 is others")] Material[] teamColors;
     [SerializeField, Tooltip("Prefab that will change material depending on team")] GameObject[] teamPrefab;
 
 
     private void Start()
     {
+        // if(isServer){
+        // myPlayer.numberOfOwnedUnit += 1;
+        // }
+
         if (isOwned)
         {
             foreach (GameObject prefab in teamPrefab)
@@ -33,6 +39,57 @@ public class Unit : NetworkBehaviour
                 prefab.GetComponent<MeshRenderer>().material = teamColors[1];
             }
         }
+    }
+    [Server]
+    public void AddAttackingUnit(Unit attackingUnit)
+    {
+        this.attackingUnits.Add(attackingUnit);
+    }
+    [Server]
+    public void RemoveAttackingUnit(Unit attackingUnit)
+    {
+        this.attackingUnits.Remove(attackingUnit);
+    }
+    [Server]
+    public void Die()
+    {
+        // attackingUnits.Remove(this);
+        
+        this.unitAttackOrder.Die();
+
+        foreach (Unit attackingUnit in attackingUnits)
+        {
+
+
+            if (attackingUnit != null)
+            {
+                if (attackingUnit.gameObject != null)
+                    attackingUnit.UnitKilled();
+            }
+        }
+        RpcDie();
+
+        myPlayerStats.UnitDie(this);
+        NetworkServer.Destroy(gameObject);
+    }
+
+    [ClientRpc]
+    /*
+    TODO:
+    change it to die animation and die should be another procedure on the server (for the case where they are special effect)
+    */
+    void RpcDie()
+    {
+        myPlayerStats.myUnitSelection.Deselect(this);
+        //those 2 line are mostly for testing purpose they will change in the future
+        gameObject.transform.GetChild(0).gameObject.SetActive(false);//0 here is the normal color cube
+        gameObject.transform.GetChild(1).gameObject.SetActive(true);//1 here is the red color cube
+
+    }
+
+    public void UnitKilled()//When this unit targets get killed
+    {
+        this.unitAttackOrder.ServerStopAll();
     }
 
     public UnitMovement GetUnitMovement()

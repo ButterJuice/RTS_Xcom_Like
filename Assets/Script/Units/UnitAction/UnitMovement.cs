@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Mirror;
 using Pathfinding;
+using Unity.VisualScripting;
 
 public class UnitMovement : UnitAction
 {
@@ -17,36 +18,61 @@ public class UnitMovement : UnitAction
     [Command]
     public void CmdMove(Vector3 position)
     {
-        
+        ServerMove(position);
+    }
+    [Server]
+    public void ServerMove(Vector3 position)
+    {
+
         if (!NavMesh.SamplePosition(position, out NavMeshHit hit, 1f, NavMesh.AllAreas)) { return; }
         agent.isStopped = false;
         agent.destination = hit.position;
     }
     [Command]
-    public void CmdStopMoving()
+    private void CmdStopMoving()
+    {
+        ServerStopMoving();
+    }
+    [Server]
+    public void ServerStopMoving()
     {
         agent.isStopped = true;
     }
+    [Client]
+    public void ClientStopMoving()
+    {
+        CmdStopMoving();
+    }
 
-    [Command]
-    public void CmdSetRun(bool running)
+    [Server]
+    public void ServerSetRun(bool running)
     {
         isRunning = running;
     }
     #endregion
 
-    #region Client
 
-
-    [Client]
+    new private void Start()
+    {
+        base.Start();
+        agent.isStopped = true;
+    }
     private void Update()
     {
-        if(!isOwned) return;
+        // if(!isOwned) return;
 
-        CmdSetRun(agent.velocity.magnitude > 0f);
+        if (isServer)
+        {
+            ServerSetRun(agent.velocity.magnitude > 0f);
 
-      //  unitAnimator.SetBool("isRunning", isRunning);
+            if (Vector3.Distance(agent.destination, gameObject.transform.position) < 1)
+            {
+
+                agent.isStopped = true;
+            }
+        }
+
+        //  unitAnimator.SetBool("isRunning", isRunning);
     }
-    #endregion
 }
 
