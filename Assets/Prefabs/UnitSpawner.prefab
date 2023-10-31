@@ -56,10 +56,11 @@ MonoBehaviour:
   - {fileID: 6489860100573734745, guid: 0c97fe04b1229724297aba2afdfeea45, type: 3}
   - {fileID: 6489860100573734745, guid: 0c97fe04b1229724297aba2afdfeea45, type: 3}
   unitSpawnPoint: {fileID: 4379084608068067931}
-  myPlayer: {fileID: 0}
+  myPlayerStats: {fileID: 0}
+  myUnitSelection: {fileID: 0}
   teamColors:
-  - {fileID: 2100000, guid: 8b51ad889c241594f880d9df4b0a5bf0, type: 2}
-  - {fileID: 2100000, guid: ace844d078371124fbb5de61950e697b, type: 2}
+  - {fileID: 2100000, guid: 75d97e4e5b8d96140b756c28d78c4f90, type: 2}
+  - {fileID: 2100000, guid: 3078f3308e864dc40a14c128e149383c, type: 2}
 --- !u!114 &545183095413145330
 MonoBehaviour:
   m_ObjectHideFlags: 0
