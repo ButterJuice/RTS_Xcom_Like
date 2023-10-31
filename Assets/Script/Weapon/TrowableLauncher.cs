@@ -47,7 +47,7 @@ public class TrowableLauncher : Weapon
         Shoot(position);
     }
     [Server]
-    public override void Shoot(Unit unit)
+    public override  void Shoot(Unit unit)
     {
         Shoot(unit.transform.position);
     }

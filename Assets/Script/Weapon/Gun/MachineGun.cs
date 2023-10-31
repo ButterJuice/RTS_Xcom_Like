@@ -10,7 +10,7 @@ public class MachineGun : Weapon
 
     #region Server
     [Server]
-    override public void Shoot(Unit targetUnit)
+    public override void Shoot(Unit targetUnit)
     {
         targetUnit.GetUnitStats().takeDamage(10);
         Vector3 closestPoint = targetUnit.GetComponent<Collider>().ClosestPoint(base.weaponMuzzle.transform.position);
@@ -38,9 +38,7 @@ public class MachineGun : Weapon
     #region Client
     [ClientRpc]
     private void RpcShootAnimation(Vector3 position)
-    {   /*
-    TODO: call the animation
-    */
+    {  
         StartCoroutine(drawLineCoroutine(position));
 
     }
@@ -58,6 +56,9 @@ public class MachineGun : Weapon
     [Client]
     IEnumerator drawLineCoroutine(Vector3 position)
     {
+        Debug.Log(unitAnimator);
+        base.unitAnimator.SetBool("isShooting", true);
+
         lr.enabled = true;
         Vector3 p1 = base.weaponMuzzle.transform.position;
         lr.positionCount = 2;
@@ -65,6 +66,8 @@ public class MachineGun : Weapon
         lr.SetPosition(1, position);
        yield return new WaitForSeconds(0.1f);
         lr.enabled = false;
+        
+        base.unitAnimator.SetBool("isShooting", false);
     }
 
 

@@ -8,17 +8,21 @@ abstract public class Weapon : NetworkBehaviour
     [SerializeField] protected SphereCollider attackRange;
     [SerializeField] public GameObject weaponMuzzle;
 
+    public Animator unitAnimator = null;//devrait etre en protected mais a ce point j'ai plus le temp de faire du beau code
 
-    public float getAttackRange(){          
+
+
+    public float getAttackRange()
+    {
         return attackRange.radius;
     }
 
-//[Server]
+    //[Server]
     abstract public void Shoot(Unit unit);
 
-//[Server]
+    //[Server]
     abstract public void Shoot(Vector3 position);
-//[Command]
+    //[Command]
     abstract public void CmdShoot(Vector3 position);
 
 }

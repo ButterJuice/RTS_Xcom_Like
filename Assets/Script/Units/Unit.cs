@@ -17,10 +17,12 @@ public class Unit : NetworkBehaviour
     [HideInInspector] public UnitSelection myUnitSelection;
     [SerializeField, Tooltip("0 is me , 1 is others")] Material[] teamColors;
     [SerializeField, Tooltip("Prefab that will change material depending on team")] GameObject[] teamPrefab;
-
+    private Animator unitAnimator = null;
+    [SyncVar] bool isDead = false; //actuellement inutile parce le serveur suprime l'objet
 
     private void Start()
     {
+        unitAnimator = gameObject.GetComponentInChildren<Animator>(); 
         // if(isServer){
         // myPlayer.numberOfOwnedUnit += 1;
         // }
@@ -53,6 +55,7 @@ public class Unit : NetworkBehaviour
     [Server]
     public void Die()
     {
+        isDead = true;
         // attackingUnits.Remove(this);
         
         this.unitAttackOrder.Die();
@@ -74,16 +77,14 @@ public class Unit : NetworkBehaviour
     }
 
     [ClientRpc]
-    /*
-    TODO:
-    change it to die animation and die should be another procedure on the server (for the case where they are special effect)
-    */
     void RpcDie()
     {
+        //The drath animation doesn't work because the object is destroyed, I will still leave it here in case one day I want to change the code
+        unitAnimator.SetBool("isDead", isDead);
         myPlayerStats.myUnitSelection.Deselect(this);
         //those 2 line are mostly for testing purpose they will change in the future
-        gameObject.transform.GetChild(0).gameObject.SetActive(false);//0 here is the normal color cube
-        gameObject.transform.GetChild(1).gameObject.SetActive(true);//1 here is the red color cube
+       // gameObject.transform.GetChild(0).gameObject.SetActive(false);//0 here is the normal color cube
+       // gameObject.transform.GetChild(1).gameObject.SetActive(true);//1 here is the red color cube
 
     }
 

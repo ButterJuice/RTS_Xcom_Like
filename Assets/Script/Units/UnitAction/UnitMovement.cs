@@ -9,10 +9,10 @@ using Unity.VisualScripting;
 public class UnitMovement : UnitAction
 {
 
-    //[SerializeField] private Animator unitAnimator = null;
+    private Animator unitAnimator = null;
     public AIPath agent = null;
 
-    [SyncVar] bool isRunning;
+    [SyncVar] bool isWalking = false;
 
     #region Server
     [Command]
@@ -47,7 +47,7 @@ public class UnitMovement : UnitAction
     [Server]
     public void ServerSetRun(bool running)
     {
-        isRunning = running;
+        isWalking = running;
     }
     #endregion
 
@@ -56,6 +56,7 @@ public class UnitMovement : UnitAction
     {
         base.Start();
         agent.isStopped = true;
+        unitAnimator = gameObject.GetComponentInChildren<Animator>();
     }
     private void Update()
     {
@@ -63,7 +64,7 @@ public class UnitMovement : UnitAction
 
         if (isServer)
         {
-            ServerSetRun(agent.velocity.magnitude > 0f);
+            ServerSetRun(agent.velocity.magnitude > 0.01f);
 
             if (Vector3.Distance(agent.destination, gameObject.transform.position) < 1)
             {
@@ -71,8 +72,12 @@ public class UnitMovement : UnitAction
                 agent.isStopped = true;
             }
         }
+        //unitAnimator.SetBool("isWalking", isWalking);
+        if (isClient)
+        {
+            unitAnimator.SetBool("isWalking", isWalking);
+        }
 
-        //  unitAnimator.SetBool("isRunning", isRunning);
     }
 }
 

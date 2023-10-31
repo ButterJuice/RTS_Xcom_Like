@@ -25,6 +25,8 @@ public class UnitAttackOrder : UnitAction
     [SerializeField, Tooltip("A laymask for all target that can block shot")] private LayerMask shootingTargetLayer;
     [HideInInspector, SyncVar] private bool ceaseFire = false;//if this is true the unit will stop trying to shoot enemies at range and stop shooting all together (with the main weapon)
 
+
+    protected Animator unitAnimator = null;
     //au moment d'ecrire le code, virtual n'est pas encore une notion tres clair
     protected new virtual void Start()
     {
@@ -34,8 +36,14 @@ public class UnitAttackOrder : UnitAction
     //This function is called inside the UnitStats Start because WeaponInnit need some initialisation inside unitStat first
     public void WeaponInnit()
     {
+
         mainWeapon = unitStats.mainWeapon;
         abilityWeapon = unitStats.abilityWeapon;
+
+        unitAnimator = gameObject.GetComponentInChildren<Animator>();
+        mainWeapon.unitAnimator = this.unitAnimator;
+        abilityWeapon.unitAnimator = this.unitAnimator;
+
 
         weaponAttackRange = mainWeapon.getAttackRange();
         if (isServer)
