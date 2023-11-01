@@ -7,14 +7,14 @@ https://www.youtube.com/watch?v=pxS14VJ_eXQ
 */
 public class CameraMovement : MonoBehaviour
 {
-    private const float cameraSpeed = 30f;
+    private const float cameraSpeed = 20f;
     private const float cameraZoomSpeed = 3000f;
 
     float speed = cameraSpeed;
     float zoomSpeed = cameraZoomSpeed;
     float rotateSpeed =20f;
 
-    float maxHeight = 40f;
+    float maxHeight = 20f;
     float minHeight = 4f;
 
     Vector2 p1;
